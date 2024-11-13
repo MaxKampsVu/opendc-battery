@@ -191,3 +191,4 @@ public final class SimPowerSource extends FlowNode implements FlowSupplier {
         this.carbonIntensity = carbonIntensity;
     }
 }
+

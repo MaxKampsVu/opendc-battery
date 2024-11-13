@@ -51,7 +51,7 @@ import org.opendc.compute.simulator.host.SimHost;
 import org.opendc.compute.simulator.scheduler.ComputeScheduler;
 import org.opendc.compute.simulator.telemetry.ComputeMetricReader;
 import org.opendc.compute.simulator.telemetry.SchedulerStats;
-import org.opendc.simulator.compute.power.SimPowerSource;
+import org.opendc.simulator.compute.power.PowerAdapter;
 import org.opendc.simulator.compute.workload.Workload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,7 +102,7 @@ public final class ComputeService implements AutoCloseable {
     /**
      * The available powerSources
      */
-    private final Set<SimPowerSource> powerSources = new HashSet<>();
+    private final Set<PowerAdapter> powerSources = new HashSet<>();
 
     /**
      * The tasks that should be launched by the service.
@@ -293,13 +293,13 @@ public final class ComputeService implements AutoCloseable {
         host.addListener(hostListener);
     }
 
-    public void addPowerSource(SimPowerSource simPowerSource) {
+    public void addPowerSource(PowerAdapter powerAdapter) {
         // Check if host is already known
-        if (powerSources.contains(simPowerSource)) {
+        if (powerSources.contains(powerAdapter)) {
             return;
         }
 
-        powerSources.add(simPowerSource);
+        powerSources.add(powerAdapter);
     }
 
     /**
@@ -332,7 +332,7 @@ public final class ComputeService implements AutoCloseable {
         return this.clock;
     }
 
-    public Set<SimPowerSource> getPowerSources() {
+    public Set<PowerAdapter> getPowerSources() {
         return Collections.unmodifiableSet(this.powerSources);
     }
 

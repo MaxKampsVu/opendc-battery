@@ -22,7 +22,7 @@
 
 package org.opendc.compute.simulator.telemetry.table
 
-import org.opendc.simulator.compute.power.SimPowerSource
+import org.opendc.simulator.compute.power.PowerAdapter
 import java.time.Duration
 import java.time.Instant
 
@@ -30,7 +30,7 @@ import java.time.Instant
  * An aggregator for task metrics before they are reported.
  */
 public class PowerSourceTableReaderImpl(
-    powerSource: SimPowerSource,
+    powerSource: PowerAdapter,
     private val startTime: Duration = Duration.ofMillis(0),
 ) : PowerSourceTableReader {
     override fun copy(): PowerSourceTableReader {

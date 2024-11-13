@@ -137,7 +137,7 @@ class SimMachineTest {
 // //                    machineModel,
 // //                    CpuPowerModels.linear(100.0, 50.0),
 // //                )
-// //            val source = SimPowerSource(graph, 1000.0f)
+// //            val source = PowerAdapter(graph, 1000.0f)
 // //            source.connect(machine.psu)
 // //
 // //            coroutineScope {
