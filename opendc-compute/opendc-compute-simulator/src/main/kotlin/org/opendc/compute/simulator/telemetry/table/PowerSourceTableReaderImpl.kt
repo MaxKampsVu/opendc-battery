@@ -22,7 +22,7 @@
 
 package org.opendc.compute.simulator.telemetry.table
 
-import org.opendc.simulator.compute.power.PowerAdapter
+import org.opendc.simulator.compute.power.battery.PowerAdapter
 import java.time.Duration
 import java.time.Instant
 

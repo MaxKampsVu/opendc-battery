@@ -36,7 +36,7 @@ import org.opendc.compute.simulator.telemetry.table.HostTableReaderImpl
 import org.opendc.compute.simulator.telemetry.table.PowerSourceTableReaderImpl
 import org.opendc.compute.simulator.telemetry.table.ServiceTableReaderImpl
 import org.opendc.compute.simulator.telemetry.table.TaskTableReaderImpl
-import org.opendc.simulator.compute.power.PowerAdapter
+import org.opendc.simulator.compute.power.battery.PowerAdapter
 import java.time.Duration
 
 /**

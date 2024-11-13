@@ -20,10 +20,13 @@
  * SOFTWARE.
  */
 
-package org.opendc.simulator.compute.power;
+package org.opendc.simulator.compute.power.battery;
 
 import java.util.List;
-import org.opendc.simulator.compute.cpu.SimCpu;
+
+import org.opendc.simulator.compute.power.CarbonFragment;
+import org.opendc.simulator.compute.power.SimPowerSource;
+import org.opendc.simulator.compute.power.SimPsu;
 import org.opendc.simulator.engine.FlowEdge;
 import org.opendc.simulator.engine.FlowGraph;
 import org.opendc.simulator.engine.FlowNode;

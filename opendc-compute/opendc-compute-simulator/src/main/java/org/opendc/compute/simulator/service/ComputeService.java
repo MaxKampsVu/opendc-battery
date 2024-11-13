@@ -51,7 +51,7 @@ import org.opendc.compute.simulator.host.SimHost;
 import org.opendc.compute.simulator.scheduler.ComputeScheduler;
 import org.opendc.compute.simulator.telemetry.ComputeMetricReader;
 import org.opendc.compute.simulator.telemetry.SchedulerStats;
-import org.opendc.simulator.compute.power.PowerAdapter;
+import org.opendc.simulator.compute.power.battery.PowerAdapter;
 import org.opendc.simulator.compute.workload.Workload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
