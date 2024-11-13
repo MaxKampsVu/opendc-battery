@@ -8,7 +8,7 @@ import org.opendc.simulator.engine.FlowGraph;
 
 import java.util.List;
 
-public class BatteryPowerAdapter extends PowerAdapter implements FlowConsumer {
+public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsumer {
     SimBattery battery;
     private FlowEdge muxEdge;
     private FlowEdge batterySupplierEdge;
@@ -23,7 +23,11 @@ public class BatteryPowerAdapter extends PowerAdapter implements FlowConsumer {
     public BatteryPowerAdapter(FlowGraph graph, double max_capacity, List<CarbonFragment> carbonFragments, long startTime, CarbonPolicy carbonPolicy) {
         super(graph, max_capacity, carbonFragments, startTime);
         battery = new SimBattery(graph, max_capacity, startTime);
+
+        //connect battery and powerSupply to the adapter
         powerSourceSupplierEdge = new FlowEdge(this, powerSource);
+        batterySupplierEdge = new FlowEdge(this, battery);
+
         this.carbonPolicy = carbonPolicy;
     }
 
@@ -31,13 +35,21 @@ public class BatteryPowerAdapter extends PowerAdapter implements FlowConsumer {
     public void close() {
         powerSource.close();
         battery.close();
+        this.closeNode();
     }
 
     @Override
     public long onUpdate(long now) {
+        //Compute if green energy is available
         double carbonIntensity = powerSource.getCarbonIntensity();
         greenEnergyAvailable = carbonPolicy.greenEnergyAvailable(carbonIntensity, now);
+
+        System.out.println("Green energy available: " + greenEnergyAvailable);
+
+        //Trigger supply push in powerSource and battery
         powerSource.onUpdate(now);
+        battery.onUpdate(now);
+
         return Long.MAX_VALUE;
     }
 
@@ -62,7 +74,13 @@ public class BatteryPowerAdapter extends PowerAdapter implements FlowConsumer {
      */
     @Override
     public void handleDemand(FlowEdge consumerEdge, double newPowerDemand) {
-        this.pushDemand(powerSourceSupplierEdge, newPowerDemand);
+        if (greenEnergyAvailable) {
+            System.out.println("pushed " + newPowerDemand + " to psu");
+            this.pushDemand(powerSourceSupplierEdge, newPowerDemand);
+        } else {
+            this.pushDemand(batterySupplierEdge, newPowerDemand);
+            System.out.println("pushed " + newPowerDemand + " to battery");
+        }
         this.invalidate();
     }
 
@@ -73,7 +91,7 @@ public class BatteryPowerAdapter extends PowerAdapter implements FlowConsumer {
      */
     @Override
     public void pushSupply(FlowEdge consumerEdge, double newSupply) {
-        this.powerSupplied = newSupply;
+        System.out.println("pushed " + newSupply + " to multiplexer");
         muxEdge.pushSupply(newSupply);
     }
 
@@ -100,7 +118,9 @@ public class BatteryPowerAdapter extends PowerAdapter implements FlowConsumer {
      */
     @Override
     public void handleSupply(FlowEdge supplierEdge, double newSupply) {
+        System.out.println("Received " + newSupply + " from " + supplierEdge.getSupplier().getClass());
         this.pushSupply(muxEdge, newSupply);
+        this.invalidate();
     }
 
     /**
@@ -110,7 +130,11 @@ public class BatteryPowerAdapter extends PowerAdapter implements FlowConsumer {
      */
     @Override
     public void pushDemand(FlowEdge supplierEdge, double newDemand) {
-        powerSource.handleDemand(supplierEdge, newDemand);
+        if (greenEnergyAvailable) {
+            powerSource.handleDemand(supplierEdge, newDemand);
+        } else {
+            battery.handleDemand(supplierEdge, newDemand);
+        }
     }
 
     @Override
