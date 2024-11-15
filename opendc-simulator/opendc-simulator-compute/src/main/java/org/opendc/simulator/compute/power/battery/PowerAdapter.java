@@ -46,17 +46,13 @@ public abstract class PowerAdapter extends FlowNode implements FlowSupplier {
         return powerSource.getPowerDemand();
     }
 
-    public double getPowerDraw() {
-        return powerSource.getPowerDraw();
-    }
+    public abstract double getPowerDraw();
 
     public double getCarbonIntensity() {
         return powerSource.getCarbonIntensity();
     }
 
-    public double getEnergyUsage() {
-        return powerSource.getEnergyUsage();
-    }
+    public abstract double getEnergyUsage();
 
     public double getCarbonEmission() {
         return powerSource.getCarbonEmission();

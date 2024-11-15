@@ -47,7 +47,7 @@ import org.opendc.trace.util.parquet.exporter.ExportColumn
  * ...
  * ```
  */
-public object DfltPowerSourceExportColumns {
+public object DfltBatteryAdapterExportColumns {
     public val TIMESTAMP: ExportColumn<PowerSourceTableReader> =
         ExportColumn(
             field = Types.required(INT64).named("timestamp"),

@@ -71,4 +71,6 @@ public interface PowerSourceTableReader : Exportable {
      * The current carbon emission since the last deadline in g.
      */
     public val carbonEmission: Double
+
+    public val greenEnergyAvailable: Boolean
 }

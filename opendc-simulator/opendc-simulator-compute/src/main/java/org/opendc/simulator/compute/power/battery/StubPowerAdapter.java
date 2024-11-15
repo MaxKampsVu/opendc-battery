@@ -7,8 +7,19 @@ import org.opendc.simulator.engine.FlowGraph;
 import java.util.List;
 
 public final class StubPowerAdapter extends PowerAdapter {
+
     public StubPowerAdapter(FlowGraph graph, double max_capacity, List<CarbonFragment> carbonFragments, long startTime) {
         super(graph, max_capacity, carbonFragments, startTime);
+    }
+
+    @Override
+    public double getPowerDraw() {
+        return powerSource.getPowerDraw();
+    }
+
+    @Override
+    public double getEnergyUsage() {
+        return powerSource.getEnergyUsage();
     }
 
     @Override

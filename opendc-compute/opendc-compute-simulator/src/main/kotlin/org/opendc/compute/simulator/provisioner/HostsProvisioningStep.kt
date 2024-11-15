@@ -30,6 +30,7 @@ import org.opendc.compute.topology.specs.HostSpec
 import org.opendc.simulator.Multiplexer
 import org.opendc.simulator.compute.power.battery.PowerAdapter
 import org.opendc.simulator.compute.power.battery.BatteryPowerAdapter
+import org.opendc.simulator.compute.power.battery.StubPowerAdapter
 import org.opendc.simulator.compute.power.battery.greenenergy.CarbonPolicy
 import org.opendc.simulator.compute.power.battery.greenenergy.SimpleCarbonPolicy
 import org.opendc.simulator.engine.FlowEngine
@@ -62,6 +63,7 @@ public class HostsProvisioningStep internal constructor(
 
             val carbonFragments = getCarbonFragments("carbon_traces/carbon_2012.parquet")
 
+
             val powerAdapter = BatteryPowerAdapter(
                 graph,
                 cluster.powerSource.totalPower.toDouble(),
@@ -69,6 +71,15 @@ public class HostsProvisioningStep internal constructor(
                 startTime,
                 SimpleCarbonPolicy()
             )
+
+            /*
+            val powerAdapter = StubPowerAdapter(
+                graph,
+                cluster.powerSource.totalPower.toDouble(),
+                carbonFragments,
+                startTime
+            )
+             */
 
             service.addPowerSource(powerAdapter)
             powerAdapters.add(powerAdapter)

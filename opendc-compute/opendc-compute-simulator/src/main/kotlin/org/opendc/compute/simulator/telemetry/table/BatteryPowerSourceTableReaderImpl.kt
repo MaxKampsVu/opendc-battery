@@ -22,26 +22,27 @@
 
 package org.opendc.compute.simulator.telemetry.table
 
-import org.opendc.simulator.compute.power.battery.PowerAdapter
+import org.opendc.simulator.compute.power.battery.BatteryPowerAdapter
 import java.time.Duration
 import java.time.Instant
 
 /**
  * An aggregator for task metrics before they are reported.
  */
-public class PowerSourceTableReaderImpl(
-    powerSource: PowerAdapter,
+public class BatteryPowerSourceTableReaderImpl(
+    powerAdapter: BatteryPowerAdapter,
     private val startTime: Duration = Duration.ofMillis(0),
 ) : PowerSourceTableReader {
     override fun copy(): PowerSourceTableReader {
         val newPowerSourceTable =
-            PowerSourceTableReaderImpl(
-                powerSource,
+            BatteryPowerSourceTableReaderImpl(
+                powerAdapter,
             )
         newPowerSourceTable.setValues(this)
-
         return newPowerSourceTable
     }
+
+    private val powerAdapter = powerAdapter
 
     override fun setValues(table: PowerSourceTableReader) {
         _timestamp = table.timestamp
@@ -52,10 +53,12 @@ public class PowerSourceTableReaderImpl(
         _energyUsage = table.energyUsage
         _carbonIntensity = table.carbonIntensity
         _carbonEmission = table.carbonEmission
+        _greenEnergyAvailable = table.greenEnergyAvailable
     }
 
-    private val powerSource = powerSource
-
+    /**
+     * Unchanged values
+     */
     private var _greenEnergyAvailable = false
     override val greenEnergyAvailable: Boolean
         get() = _greenEnergyAvailable
@@ -99,11 +102,12 @@ public class PowerSourceTableReaderImpl(
 
         _hostsConnected = 0
 
-        powerSource.updateCounters()
-        _powerDraw = powerSource.powerDraw
-        _energyUsage = powerSource.energyUsage
-        _carbonIntensity = powerSource.carbonIntensity
-        _carbonEmission = powerSource.carbonEmission
+        powerAdapter.updateCounters()
+        _powerDraw = powerAdapter.powerDraw
+        _energyUsage = powerAdapter.energyUsage
+        _carbonIntensity = powerAdapter.carbonIntensity
+        _carbonEmission = powerAdapter.carbonEmission
+        _greenEnergyAvailable = powerAdapter.isGreenEnergyAvailable
     }
 
     /**
@@ -118,5 +122,6 @@ public class PowerSourceTableReaderImpl(
         _energyUsage = 0.0
         _carbonIntensity = 0.0
         _carbonEmission = 0.0
+        _greenEnergyAvailable = false;
     }
 }

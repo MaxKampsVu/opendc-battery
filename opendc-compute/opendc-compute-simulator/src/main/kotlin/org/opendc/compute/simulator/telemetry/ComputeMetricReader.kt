@@ -32,11 +32,15 @@ import org.opendc.common.asCoroutineDispatcher
 import org.opendc.compute.simulator.host.SimHost
 import org.opendc.compute.simulator.service.ComputeService
 import org.opendc.compute.simulator.service.ServiceTask
+import org.opendc.compute.simulator.telemetry.table.BatteryPowerSourceTableReaderImpl
 import org.opendc.compute.simulator.telemetry.table.HostTableReaderImpl
+import org.opendc.compute.simulator.telemetry.table.PowerSourceTableReader
 import org.opendc.compute.simulator.telemetry.table.PowerSourceTableReaderImpl
 import org.opendc.compute.simulator.telemetry.table.ServiceTableReaderImpl
 import org.opendc.compute.simulator.telemetry.table.TaskTableReaderImpl
+import org.opendc.simulator.compute.power.battery.BatteryPowerAdapter
 import org.opendc.simulator.compute.power.battery.PowerAdapter
+import org.opendc.simulator.compute.power.battery.StubPowerAdapter
 import java.time.Duration
 
 /**
@@ -83,7 +87,7 @@ public class ComputeMetricReader(
     /**
      * Mapping from [PowerAdapter] instances to [PowerSourceTableReaderImpl]
      */
-    private val powerSourceTableReaders = mutableMapOf<PowerAdapter, PowerSourceTableReaderImpl>()
+    private val powerSourceTableReaders = mutableMapOf<PowerAdapter, PowerSourceTableReader>()
 
     /**
      * The background job that is responsible for collecting the metrics every cycle.
@@ -103,6 +107,20 @@ public class ComputeMetricReader(
                 }
             }
         }
+
+    /**
+     * Factory function to create different types of table readers based on the type of the adapter
+     */
+    private fun createPowerSourceTableReader(
+        powerAdapter: PowerAdapter,
+        startTime: Duration
+    ): PowerSourceTableReader {
+        return when (powerAdapter) {
+            is BatteryPowerAdapter -> BatteryPowerSourceTableReaderImpl(powerAdapter, startTime)
+            is StubPowerAdapter -> PowerSourceTableReaderImpl(powerAdapter, startTime)
+            else -> throw IllegalArgumentException("Unsupported power adapter type")
+        }
+    }
 
     public fun loggState() {
         loggCounter++
@@ -141,14 +159,10 @@ public class ComputeMetricReader(
             }
             this.service.clearTasksToRemove()
 
-            for (simPowerSource in this.service.powerSources) {
-                val reader =
-                    this.powerSourceTableReaders.computeIfAbsent(simPowerSource) {
-                        PowerSourceTableReaderImpl(
-                            it,
-                            startTime,
-                        )
-                    }
+            for (powerAdapter in this.service.powerSources) {
+                val reader = this.powerSourceTableReaders.computeIfAbsent(powerAdapter) {
+                    createPowerSourceTableReader(it, startTime)
+                }
 
                 reader.record(now)
                 this.monitor.record(reader.copy())
