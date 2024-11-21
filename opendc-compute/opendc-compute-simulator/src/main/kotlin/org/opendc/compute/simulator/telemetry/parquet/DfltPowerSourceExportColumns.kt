@@ -22,9 +22,6 @@
 
 package org.opendc.compute.simulator.telemetry.parquet
 
-import kotlinx.serialization.descriptors.PrimitiveKind
-import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.BINARY
-import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.BOOLEAN
 import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.FLOAT
 import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.INT32
 import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.INT64
@@ -82,11 +79,6 @@ public object DfltPowerSourceExportColumns {
         ExportColumn(
             field = Types.required(FLOAT).named("carbon_emission"),
         ) { it.carbonEmission }
-
-    public val GREEN_ENERGY_AVAILABLE: ExportColumn<PowerSourceTableReader> =
-        ExportColumn(
-            field = Types.required(BOOLEAN).named("green_energy_available"),
-        ) { it.greenEnergyAvailable }
 
     /**
      * The columns that are always included in the output file.

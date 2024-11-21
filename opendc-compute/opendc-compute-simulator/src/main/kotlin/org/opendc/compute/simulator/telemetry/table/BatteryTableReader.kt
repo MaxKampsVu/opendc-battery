@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 AtLarge Research
+ * Copyright (c) 2021 AtLarge Research
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,40 +20,45 @@
  * SOFTWARE.
  */
 
-package org.opendc.compute.simulator.telemetry
+package org.opendc.compute.simulator.telemetry.table
 
-import org.opendc.compute.simulator.telemetry.table.BatteryTableReader
-import org.opendc.compute.simulator.telemetry.table.HostTableReader
-import org.opendc.compute.simulator.telemetry.table.PowerSourceTableReader
-import org.opendc.compute.simulator.telemetry.table.ServiceTableReader
-import org.opendc.compute.simulator.telemetry.table.TaskTableReader
+import org.opendc.trace.util.parquet.exporter.Exportable
+import java.time.Instant
 
 /**
- * A monitor that tracks the metrics and events of the OpenDC Compute service.
+ * An interface that is used to read a row of a host trace entry.
  */
-public interface ComputeMonitor {
-    /**
-     * Record an entry with the specified [reader].
-     */
-    public fun record(reader: TaskTableReader) {}
+public interface BatteryTableReader : Exportable {
+    public fun copy(): BatteryTableReader
+
+    public fun setValues(table: BatteryTableReader)
+
+    public fun record(now: Instant)
+
+    public fun reset()
 
     /**
-     * Record an entry with the specified [reader].
+     * The timestamp of the current entry of the reader relative to the start of the workload.
      */
-    public fun record(reader: HostTableReader) {}
+    public val timestamp: Instant
 
     /**
-     * Record an entry with the specified [reader].
+     * The timestamp of the current entry of the reader.
      */
-    public fun record(reader: PowerSourceTableReader) {}
+    public val timestampAbsolute: Instant
 
     /**
-     * Record an entry with the specified [reader].
+     * The number of connected hosts
      */
-    public fun record(reader: BatteryTableReader) {}
+    public val hostsConnected: Int
 
     /**
-     * Record an entry with the specified [reader].
+     * The current power draw of the host in W.
      */
-    public fun record(reader: ServiceTableReader) {}
+    public val powerDraw: Double
+
+    /**
+     * The total energy consumption of the host since last sample in J.
+     */
+    public val energyUsage: Double
 }

@@ -42,6 +42,10 @@ public abstract class PowerAdapter extends FlowNode implements FlowSupplier {
         return powerSource.isConnected();
     }
 
+    public SimPowerSource getSimPowerSource() {
+        return this.powerSource;
+    }
+
     public double getPowerDemand() {
         return powerSource.getPowerDemand();
     }

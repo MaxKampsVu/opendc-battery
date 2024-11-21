@@ -27,6 +27,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.encodeStructure
@@ -35,6 +36,7 @@ import kotlinx.serialization.json.JsonDecoder
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import org.opendc.common.logger.logger
+import org.opendc.compute.simulator.telemetry.table.BatteryTableReader
 import org.opendc.compute.simulator.telemetry.table.HostTableReader
 import org.opendc.compute.simulator.telemetry.table.PowerSourceTableReader
 import org.opendc.compute.simulator.telemetry.table.ServiceTableReader
@@ -51,6 +53,7 @@ import org.opendc.trace.util.parquet.exporter.columnSerializer
  * @param[hostExportColumns]     the columns that will be included in the `host.parquet` raw output file.
  * @param[taskExportColumns]   the columns that will be included in the `task.parquet` raw output file.
  * @param[powerSourceExportColumns]  the columns that will be included in the `power.parquet` raw output file.
+ * @param[batteryExportColumns]  the columns that will be included in the `battery.parquet` raw output file.
  * @param[serviceExportColumns]  the columns that will be included in the `service.parquet` raw output file.
  */
 @Serializable(with = ComputeExportConfig.Companion.ComputeExportConfigSerializer::class)
@@ -58,17 +61,20 @@ public data class ComputeExportConfig(
     public val hostExportColumns: Set<ExportColumn<HostTableReader>>,
     public val taskExportColumns: Set<ExportColumn<TaskTableReader>>,
     public val powerSourceExportColumns: Set<ExportColumn<PowerSourceTableReader>>,
+    public val batteryExportColumns: Set<ExportColumn<BatteryTableReader>>,
     public val serviceExportColumns: Set<ExportColumn<ServiceTableReader>>,
 ) {
     public constructor(
         hostExportColumns: Collection<ExportColumn<HostTableReader>>,
         taskExportColumns: Collection<ExportColumn<TaskTableReader>>,
         powerSourceExportColumns: Collection<ExportColumn<PowerSourceTableReader>>,
+        batteryExportColumns: Collection<ExportColumn<BatteryTableReader>>,
         serviceExportColumns: Collection<ExportColumn<ServiceTableReader>>,
     ) : this(
         hostExportColumns.toSet() + DfltHostExportColumns.BASE_EXPORT_COLUMNS,
         taskExportColumns.toSet() + DfltTaskExportColumns.BASE_EXPORT_COLUMNS,
         powerSourceExportColumns.toSet() + DfltPowerSourceExportColumns.BASE_EXPORT_COLUMNS,
+        batteryExportColumns.toSet() + DfltBatteryExportColumns.BASE_EXPORT_COLUMNS,
         serviceExportColumns.toSet() + DfltServiceExportColumns.BASE_EXPORT_COLUMNS,
     )
 
@@ -81,6 +87,7 @@ public data class ComputeExportConfig(
         | Host columns    : ${hostExportColumns.map { it.name }.toString().trim('[', ']')}
         | Task columns  : ${taskExportColumns.map { it.name }.toString().trim('[', ']')}
         | Power Source columns : ${powerSourceExportColumns.map { it.name }.toString().trim('[', ']')}
+        | Battery columns: ${batteryExportColumns.map { it.name }.toString().trim('[', ']')}
         | Service columns : ${serviceExportColumns.map { it.name }.toString().trim('[', ']')}
         """.trimIndent()
 
@@ -95,6 +102,7 @@ public data class ComputeExportConfig(
             DfltHostExportColumns
             DfltTaskExportColumns
             DfltPowerSourceExportColumns
+            DfltBatteryExportColumns
             DfltServiceExportColumns
         }
 
@@ -109,6 +117,7 @@ public data class ComputeExportConfig(
                 hostExportColumns = ExportColumn.getAllLoadedColumns(),
                 taskExportColumns = ExportColumn.getAllLoadedColumns(),
                 powerSourceExportColumns = ExportColumn.getAllLoadedColumns(),
+                batteryExportColumns = ExportColumn.getAllLoadedColumns(),
                 serviceExportColumns = ExportColumn.getAllLoadedColumns(),
             )
         }
@@ -134,6 +143,10 @@ public data class ComputeExportConfig(
                         ListSerializer(columnSerializer<ServiceTableReader>()).descriptor,
                     )
                     element(
+                        "batteryExportColumns",
+                        ListSerializer(columnSerializer<ServiceTableReader>()).descriptor,
+                    )
+                    element(
                         "serviceExportColumns",
                         ListSerializer(columnSerializer<ServiceTableReader>()).descriptor,
                     )
@@ -153,12 +166,14 @@ public data class ComputeExportConfig(
                 val hostFields: List<ExportColumn<HostTableReader>> = elem["hostExportColumns"].toFieldList()
                 val taskFields: List<ExportColumn<TaskTableReader>> = elem["taskExportColumns"].toFieldList()
                 val powerSourceFields: List<ExportColumn<PowerSourceTableReader>> = elem["powerSourceExportColumns"].toFieldList()
+                val batteryFields: List<ExportColumn<BatteryTableReader>> = elem["batteryExportColumns"].toFieldList()
                 val serviceFields: List<ExportColumn<ServiceTableReader>> = elem["serviceExportColumns"].toFieldList()
 
                 return ComputeExportConfig(
                     hostExportColumns = hostFields,
                     taskExportColumns = taskFields,
                     powerSourceExportColumns = powerSourceFields,
+                    batteryExportColumns = batteryFields,
                     serviceExportColumns = serviceFields,
                 )
             }
@@ -185,6 +200,12 @@ public data class ComputeExportConfig(
                         2,
                         ColListSerializer(columnSerializer<PowerSourceTableReader>()),
                         value.powerSourceExportColumns.toList(),
+                    )
+                    encodeSerializableElement(
+                        descriptor,
+                        2,
+                        ColListSerializer(columnSerializer<BatteryTableReader>()),
+                        value.batteryExportColumns.toList(),
                     )
                     encodeSerializableElement(
                         descriptor,

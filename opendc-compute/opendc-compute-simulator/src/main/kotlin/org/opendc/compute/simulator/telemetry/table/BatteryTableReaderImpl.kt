@@ -22,46 +22,38 @@
 
 package org.opendc.compute.simulator.telemetry.table
 
-import org.opendc.simulator.compute.power.battery.BatteryPowerAdapter
+
+import org.opendc.simulator.compute.power.battery.SimBattery
 import java.time.Duration
 import java.time.Instant
 
 /**
  * An aggregator for task metrics before they are reported.
  */
-public class BatteryPowerSourceTableReaderImpl(
-    powerAdapter: BatteryPowerAdapter,
+public class BatteryTableReaderImpl(
+    simBattery: SimBattery,
     private val startTime: Duration = Duration.ofMillis(0),
-) : PowerSourceTableReader {
-    override fun copy(): PowerSourceTableReader {
-        val newPowerSourceTable =
-            BatteryPowerSourceTableReaderImpl(
-                powerAdapter,
+) : BatteryTableReader {
+    override fun copy(): BatteryTableReader {
+        val newBatteryTable =
+            BatteryTableReaderImpl(
+                powerSource,
             )
-        newPowerSourceTable.setValues(this)
-        return newPowerSourceTable
+        newBatteryTable.setValues(this)
+
+        return newBatteryTable
     }
 
-    private val powerAdapter = powerAdapter
-
-    override fun setValues(table: PowerSourceTableReader) {
+    override fun setValues(table: BatteryTableReader) {
         _timestamp = table.timestamp
         _timestampAbsolute = table.timestampAbsolute
 
         _hostsConnected = table.hostsConnected
         _powerDraw = table.powerDraw
         _energyUsage = table.energyUsage
-        _carbonIntensity = table.carbonIntensity
-        _carbonEmission = table.carbonEmission
-        _greenEnergyAvailable = table.greenEnergyAvailable
     }
 
-    /**
-     * Unchanged values
-     */
-    private var _greenEnergyAvailable = false
-    override val greenEnergyAvailable: Boolean
-        get() = _greenEnergyAvailable
+    private val powerSource = simBattery
 
     private var _timestamp = Instant.MIN
     override val timestamp: Instant
@@ -84,15 +76,6 @@ public class BatteryPowerSourceTableReaderImpl(
     private var _energyUsage = 0.0
     private var previousEnergyUsage = 0.0
 
-    override val carbonIntensity: Double
-        get() = _carbonIntensity
-    private var _carbonIntensity = 0.0
-
-    override val carbonEmission: Double
-        get() = _carbonEmission - previousCarbonEmission
-    private var _carbonEmission = 0.0
-    private var previousCarbonEmission = 0.0
-
     /**
      * Record the next cycle.
      */
@@ -102,12 +85,9 @@ public class BatteryPowerSourceTableReaderImpl(
 
         _hostsConnected = 0
 
-        powerAdapter.updateCounters()
-        _powerDraw = powerAdapter.powerDraw
-        _energyUsage = powerAdapter.energyUsage
-        _carbonIntensity = powerAdapter.carbonIntensity
-        _carbonEmission = powerAdapter.carbonEmission
-        _greenEnergyAvailable = powerAdapter.isGreenEnergyAvailable
+        powerSource.updateCounters()
+        _powerDraw = powerSource.powerDraw
+        _energyUsage = powerSource.energyUsage
     }
 
     /**
@@ -115,13 +95,9 @@ public class BatteryPowerSourceTableReaderImpl(
      */
     override fun reset() {
         previousEnergyUsage = _energyUsage
-        previousCarbonEmission = _carbonEmission
 
         _hostsConnected = 0
         _powerDraw = 0.0
         _energyUsage = 0.0
-        _carbonIntensity = 0.0
-        _carbonEmission = 0.0
-        _greenEnergyAvailable = false;
     }
 }

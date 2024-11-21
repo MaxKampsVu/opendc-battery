@@ -22,14 +22,11 @@
 
 package org.opendc.compute.simulator.telemetry.parquet
 
-import kotlinx.serialization.descriptors.PrimitiveKind
-import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.BINARY
-import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.BOOLEAN
 import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.FLOAT
 import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.INT32
 import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.INT64
 import org.apache.parquet.schema.Types
-import org.opendc.compute.simulator.telemetry.table.PowerSourceTableReader
+import org.opendc.compute.simulator.telemetry.table.BatteryTableReader
 import org.opendc.trace.util.parquet.exporter.ExportColumn
 
 /**
@@ -47,46 +44,31 @@ import org.opendc.trace.util.parquet.exporter.ExportColumn
  * ...
  * ```
  */
-public object DfltBatteryAdapterExportColumns {
-    public val TIMESTAMP: ExportColumn<PowerSourceTableReader> =
+public object DfltBatteryExportColumns {
+    public val TIMESTAMP: ExportColumn<BatteryTableReader> =
         ExportColumn(
             field = Types.required(INT64).named("timestamp"),
         ) { it.timestamp.toEpochMilli() }
 
-    public val TIMESTAMP_ABS: ExportColumn<PowerSourceTableReader> =
+    public val TIMESTAMP_ABS: ExportColumn<BatteryTableReader> =
         ExportColumn(
             field = Types.required(INT64).named("timestamp_absolute"),
         ) { it.timestampAbsolute.toEpochMilli() }
 
-    public val CPU_COUNT: ExportColumn<PowerSourceTableReader> =
+    public val CPU_COUNT: ExportColumn<BatteryTableReader> =
         ExportColumn(
             field = Types.required(INT32).named("hosts_connected"),
         ) { it.hostsConnected }
 
-    public val POWER_DRAW: ExportColumn<PowerSourceTableReader> =
+    public val POWER_DRAW: ExportColumn<BatteryTableReader> =
         ExportColumn(
             field = Types.required(FLOAT).named("power_draw"),
         ) { it.powerDraw }
 
-    public val ENERGY_USAGE: ExportColumn<PowerSourceTableReader> =
+    public val ENERGY_USAGE: ExportColumn<BatteryTableReader> =
         ExportColumn(
             field = Types.required(FLOAT).named("energy_usage"),
         ) { it.energyUsage }
-
-    public val CARBON_INTENSITY: ExportColumn<PowerSourceTableReader> =
-        ExportColumn(
-            field = Types.required(FLOAT).named("carbon_intensity"),
-        ) { it.carbonIntensity }
-
-    public val CARBON_EMISSION: ExportColumn<PowerSourceTableReader> =
-        ExportColumn(
-            field = Types.required(FLOAT).named("carbon_emission"),
-        ) { it.carbonEmission }
-
-    public val GREEN_ENERGY_AVAILABLE: ExportColumn<PowerSourceTableReader> =
-        ExportColumn(
-            field = Types.required(BOOLEAN).named("green_energy_available"),
-        ) { it.greenEnergyAvailable }
 
     /**
      * The columns that are always included in the output file.
