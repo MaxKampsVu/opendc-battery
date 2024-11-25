@@ -112,7 +112,6 @@ public class SimBattery extends FlowNode implements FlowSupplier {
 
     @Override
     public void handleDemand(FlowEdge consumerEdge, double newPowerDemand) {
-
         this.powerDemand = newPowerDemand;
         this.invalidate();
     }

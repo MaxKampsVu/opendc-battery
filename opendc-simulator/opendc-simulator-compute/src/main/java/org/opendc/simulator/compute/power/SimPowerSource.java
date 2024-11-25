@@ -128,7 +128,6 @@ public final class SimPowerSource extends FlowNode implements FlowSupplier {
     public long onUpdate(long now) {
         updateCounters();
         double powerSupply = this.powerDemand;
-
         if (powerSupply != this.powerSupplied) {
             this.pushSupply(this.muxEdge, powerSupply);
         }
@@ -163,7 +162,6 @@ public final class SimPowerSource extends FlowNode implements FlowSupplier {
 
     @Override
     public void handleDemand(FlowEdge consumerEdge, double newPowerDemand) {
-
         this.powerDemand = newPowerDemand;
         this.invalidate();
     }

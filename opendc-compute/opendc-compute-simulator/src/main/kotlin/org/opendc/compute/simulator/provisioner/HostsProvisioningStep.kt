@@ -72,6 +72,8 @@ public class HostsProvisioningStep internal constructor(
                 SimpleCarbonPolicy()
             )
 
+
+
             /*
             val powerAdapter = StubPowerAdapter(
                 graph,
@@ -79,7 +81,10 @@ public class HostsProvisioningStep internal constructor(
                 carbonFragments,
                 startTime
             )
-             */
+            */
+
+
+
 
             service.addPowerSource(powerAdapter)
             powerAdapters.add(powerAdapter)
