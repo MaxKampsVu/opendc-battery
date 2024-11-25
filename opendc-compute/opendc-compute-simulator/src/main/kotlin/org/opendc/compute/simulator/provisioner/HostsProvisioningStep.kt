@@ -61,7 +61,7 @@ public class HostsProvisioningStep internal constructor(
         for (cluster in clusterSpecs) {
             // Create the Power Source to which hosts are connected
 
-            val carbonFragments = getCarbonFragments("carbon_traces/carbon_2012.parquet")
+            val carbonFragments = getCarbonFragments("carbon_traces/sin_carbon_trace.parquet")
 
 
             val powerAdapter = BatteryPowerAdapter(
