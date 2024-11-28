@@ -74,6 +74,7 @@ public class HostsProvisioningStep internal constructor(
 
 
 
+
             /*
             val powerAdapter = StubPowerAdapter(
                 graph,
@@ -81,7 +82,7 @@ public class HostsProvisioningStep internal constructor(
                 carbonFragments,
                 startTime
             )
-            */
+             */
 
 
 

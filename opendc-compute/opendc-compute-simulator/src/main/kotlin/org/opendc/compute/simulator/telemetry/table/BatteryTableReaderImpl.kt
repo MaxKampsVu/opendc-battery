@@ -37,7 +37,7 @@ public class BatteryTableReaderImpl(
     override fun copy(): BatteryTableReader {
         val newBatteryTable =
             BatteryTableReaderImpl(
-                powerSource,
+                battery,
             )
         newBatteryTable.setValues(this)
 
@@ -51,9 +51,11 @@ public class BatteryTableReaderImpl(
         _hostsConnected = table.hostsConnected
         _powerDraw = table.powerDraw
         _energyUsage = table.energyUsage
+        _state = table.state
+        _chargeLevel = table.chargeLevel
     }
 
-    private val powerSource = simBattery
+    private val battery = simBattery
 
     private var _timestamp = Instant.MIN
     override val timestamp: Instant
@@ -76,6 +78,14 @@ public class BatteryTableReaderImpl(
     private var _energyUsage = 0.0
     private var previousEnergyUsage = 0.0
 
+    override val state: String
+        get() = _state
+    private var _state = "IDLE"
+
+    override val chargeLevel: Double
+        get() = _chargeLevel
+    private var _chargeLevel = 0.0
+
     /**
      * Record the next cycle.
      */
@@ -85,9 +95,11 @@ public class BatteryTableReaderImpl(
 
         _hostsConnected = 0
 
-        powerSource.updateCounters()
-        _powerDraw = powerSource.powerDraw
-        _energyUsage = powerSource.energyUsage
+        battery.updateCounters()
+        _powerDraw = battery.powerDraw
+        _energyUsage = battery.energyUsage
+        _state = battery.stateString
+        _chargeLevel = battery.chargeLevel
     }
 
     /**
@@ -99,5 +111,7 @@ public class BatteryTableReaderImpl(
         _hostsConnected = 0
         _powerDraw = 0.0
         _energyUsage = 0.0
+        _state = "IDLE"
+        _chargeLevel = 0.0
     }
 }

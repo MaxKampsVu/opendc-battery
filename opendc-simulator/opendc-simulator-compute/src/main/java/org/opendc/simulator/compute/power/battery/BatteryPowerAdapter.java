@@ -1,10 +1,12 @@
 package org.opendc.simulator.compute.power.battery;
 
 import org.opendc.simulator.compute.power.CarbonFragment;
+import org.opendc.simulator.compute.power.MultiSimPowerSource;
 import org.opendc.simulator.compute.power.battery.greenenergy.CarbonPolicy;
 import org.opendc.simulator.engine.FlowConsumer;
 import org.opendc.simulator.engine.FlowEdge;
 import org.opendc.simulator.engine.FlowGraph;
+import org.opendc.simulator.engine.FlowSupplier;
 
 import java.util.List;
 
@@ -22,13 +24,20 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
     private boolean greenEnergyAvailable = false;
 
     public BatteryPowerAdapter(FlowGraph graph, double max_capacity, List<CarbonFragment> carbonFragments, long startTime, CarbonPolicy carbonPolicy) {
-        super(graph, max_capacity, carbonFragments, startTime);
-        battery = new SimBattery(graph, max_capacity, startTime);
+        //initialize powerSource in super class
+        super(graph, new MultiSimPowerSource(graph, max_capacity, carbonFragments, startTime));
+
+        //connect battery and powerSource to each other
+        battery = new SimBattery(graph, 400000000, startTime);
+        batterySupplierEdge = new FlowEdge(battery, powerSource);
+        battery.addSupplierEdge(batterySupplierEdge);
+        ((MultiSimPowerSource)powerSource).addBatteryEdge(batterySupplierEdge);
 
         //connect battery and powerSupply to the adapter
         powerSourceSupplierEdge = new FlowEdge(this, powerSource);
         batterySupplierEdge = new FlowEdge(this, battery);
 
+        //add the carbon policy
         this.carbonPolicy = carbonPolicy;
     }
 

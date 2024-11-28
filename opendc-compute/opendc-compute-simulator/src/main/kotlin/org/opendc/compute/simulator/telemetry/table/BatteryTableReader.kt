@@ -61,4 +61,14 @@ public interface BatteryTableReader : Exportable {
      * The total energy consumption of the host since last sample in J.
      */
     public val energyUsage: Double
+
+    /**
+     * The current charge level in J.
+     */
+    public val chargeLevel: Double
+
+    /**
+     * The current state (IDLE, CHARGING, DEPLETING).
+     */
+    public val state: String
 }

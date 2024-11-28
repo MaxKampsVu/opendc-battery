@@ -22,9 +22,13 @@
 
 package org.opendc.compute.simulator.telemetry.parquet
 
+import kotlinx.serialization.descriptors.PrimitiveKind
+import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.BINARY
+import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.DOUBLE
 import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.FLOAT
 import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.INT32
 import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.INT64
+import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.FIXED_LEN_BYTE_ARRAY
 import org.apache.parquet.schema.Types
 import org.opendc.compute.simulator.telemetry.table.BatteryTableReader
 import org.opendc.trace.util.parquet.exporter.ExportColumn
@@ -69,6 +73,19 @@ public object DfltBatteryExportColumns {
         ExportColumn(
             field = Types.required(FLOAT).named("energy_usage"),
         ) { it.energyUsage }
+
+    /*
+    public val STATE: ExportColumn<BatteryTableReader> =
+        ExportColumn(
+            field = Types.required(FIXED_LEN_BYTE_ARRAY).named("state"),
+        ) { it.state }
+    */
+
+    public val CHARGE_LEVEL: ExportColumn<BatteryTableReader> =
+        ExportColumn(
+            field = Types.required(DOUBLE).named("charge_level"),
+        ) { it.chargeLevel }
+
 
     /**
      * The columns that are always included in the output file.

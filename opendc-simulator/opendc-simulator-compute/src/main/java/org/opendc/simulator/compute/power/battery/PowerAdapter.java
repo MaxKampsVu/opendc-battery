@@ -71,6 +71,11 @@ public abstract class PowerAdapter extends FlowNode implements FlowSupplier {
         this.powerSource = new SimPowerSource(graph, max_capacity, carbonFragments, startTime);
     }
 
+    public PowerAdapter(FlowGraph graph, SimPowerSource simPowerSource) {
+        super(graph);
+        this.powerSource = simPowerSource;
+    }
+
     public abstract void close();
 
     @Override

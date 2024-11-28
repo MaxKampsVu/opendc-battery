@@ -32,12 +32,12 @@ import org.opendc.simulator.engine.FlowSupplier;
 /**
  * A {@link SimPsu} implementation that estimates the power consumption based on CPU usage.
  */
-public final class SimPowerSource extends FlowNode implements FlowSupplier {
-    private long lastUpdate;
+public class SimPowerSource extends FlowNode implements FlowSupplier {
+    protected long lastUpdate;
 
     private double powerDemand = 0.0f;
     private double powerSupplied = 0.0f;
-    private double totalEnergyUsage = 0.0f;
+    protected double totalEnergyUsage = 0.0f;
 
     private double carbonIntensity = 0.0f;
     private double totalCarbonEmission = 0.0f;
@@ -127,12 +127,17 @@ public final class SimPowerSource extends FlowNode implements FlowSupplier {
     @Override
     public long onUpdate(long now) {
         updateCounters();
+
+        supplyMuxEdge();
+
+        return Long.MAX_VALUE;
+    }
+
+    protected void supplyMuxEdge() {
         double powerSupply = this.powerDemand;
         if (powerSupply != this.powerSupplied) {
             this.pushSupply(this.muxEdge, powerSupply);
         }
-
-        return Long.MAX_VALUE;
     }
 
     public void updateCounters() {
@@ -168,7 +173,6 @@ public final class SimPowerSource extends FlowNode implements FlowSupplier {
 
     @Override
     public void pushSupply(FlowEdge consumerEdge, double newSupply) {
-
         this.powerSupplied = newSupply;
         consumerEdge.pushSupply(newSupply);
     }
