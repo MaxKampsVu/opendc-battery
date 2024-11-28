@@ -17,8 +17,8 @@ data_battery$timestamp <- as.POSIXct(data_battery$timestamp / 1000, origin = "19
 # Merge the two datasets on the timestamp column
 merged_data <- merge(data_main, data_battery, by = "timestamp", suffixes = c("_main", "_battery"))
 
-# Create the plot
-ggplot(merged_data, aes(x = timestamp)) +
+# Create the main power draw and carbon intensity plot
+main_plot <- ggplot(merged_data, aes(x = timestamp)) +
   # Plot the red "Carbon Intensity" line last to bring it to the foreground
   geom_line(aes(y = power_draw_main, color = "Main Power Draw")) +
   geom_line(aes(y = power_draw_battery, color = "Battery Power Draw")) +
@@ -45,3 +45,21 @@ ggplot(merged_data, aes(x = timestamp)) +
   ) +
   theme_minimal() +
   theme(legend.position = "top")
+
+# Create the charge level plot
+charge_plot <- ggplot(data_battery, aes(x = timestamp, y = charge_level)) +
+  geom_line(color = "purple", size = 1) +
+  labs(
+    title = "Battery Charge Level Over Time",
+    x = "Timestamp",
+    y = "Charge Level (%)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+# Print both plots
+print(main_plot)
+#print(charge_plot)
