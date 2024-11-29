@@ -22,6 +22,7 @@
 
 package org.opendc.compute.simulator.telemetry.table
 
+import org.opendc.simulator.compute.power.MultiSimPowerSource
 import org.opendc.simulator.compute.power.SimPowerSource
 import java.time.Duration
 import java.time.Instant
@@ -50,6 +51,8 @@ public class PowerSourceTableReaderImpl(
         _hostsConnected = table.hostsConnected
         _powerDraw = table.powerDraw
         _energyUsage = table.energyUsage
+        _energyUsageBattery = table.energyUsageBattery
+        _energyUsageAdapter = table.energyUsageAdapter
         _carbonIntensity = table.carbonIntensity
         _carbonEmission = table.carbonEmission
     }
@@ -77,6 +80,16 @@ public class PowerSourceTableReaderImpl(
     private var _energyUsage = 0.0
     private var previousEnergyUsage = 0.0
 
+    override val energyUsageBattery: Double
+        get() = _energyUsageBattery - previousEnergyUsageBattery
+    private var _energyUsageBattery = 0.0
+    private var previousEnergyUsageBattery = 0.0
+
+    override val energyUsageAdapter: Double
+        get() = _energyUsageAdapter - previousEnergyUsageAdapter
+    private var _energyUsageAdapter = 0.0
+    private var previousEnergyUsageAdapter = 0.0
+
     override val carbonIntensity: Double
         get() = _carbonIntensity
     private var _carbonIntensity = 0.0
@@ -98,6 +111,10 @@ public class PowerSourceTableReaderImpl(
         powerSource.updateCounters()
         _powerDraw = powerSource.powerDraw
         _energyUsage = powerSource.energyUsage
+        if (powerSource is MultiSimPowerSource) {
+            _energyUsageBattery = powerSource.batteryEnergyUsage
+            _energyUsageAdapter = powerSource.adapterEnergyUsage
+        }
         _carbonIntensity = powerSource.carbonIntensity
         _carbonEmission = powerSource.carbonEmission
     }
@@ -112,6 +129,8 @@ public class PowerSourceTableReaderImpl(
         _hostsConnected = 0
         _powerDraw = 0.0
         _energyUsage = 0.0
+        _energyUsageBattery = 0.0
+        _energyUsageAdapter = 0.0
         _carbonIntensity = 0.0
         _carbonEmission = 0.0
     }

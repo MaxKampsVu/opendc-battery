@@ -70,6 +70,16 @@ public object DfltPowerSourceExportColumns {
             field = Types.required(FLOAT).named("energy_usage"),
         ) { it.energyUsage }
 
+    public val ENERGY_USAGE_BATTERY: ExportColumn<PowerSourceTableReader> =
+        ExportColumn(
+            field = Types.required(FLOAT).named("energy_usage_battery"),
+        ) { it.energyUsageBattery }
+
+    public val ENERGY_USAGE_ADAPTER: ExportColumn<PowerSourceTableReader> =
+        ExportColumn(
+            field = Types.required(FLOAT).named("energy_usage_adapter"),
+        ) { it.energyUsageAdapter }
+
     public val CARBON_INTENSITY: ExportColumn<PowerSourceTableReader> =
         ExportColumn(
             field = Types.required(FLOAT).named("carbon_intensity"),

@@ -41,6 +41,7 @@ import org.opendc.compute.simulator.telemetry.table.ServiceTableReaderImpl
 import org.opendc.compute.simulator.telemetry.table.TaskTableReaderImpl
 import org.opendc.simulator.compute.power.SimPowerSource
 import org.opendc.simulator.compute.power.battery.BatteryPowerAdapter
+import org.opendc.simulator.compute.power.battery.BatteryPowerAdapterLogger
 import org.opendc.simulator.compute.power.battery.PowerAdapter
 import org.opendc.simulator.compute.power.battery.SimBattery
 import org.opendc.simulator.compute.power.battery.StubPowerAdapter
@@ -156,12 +157,14 @@ public class ComputeMetricReader(
             this.service.clearTasksToRemove()
 
             for (powerAdapter in this.service.powerSources) {
+
                 val powerSourceReader = this.powerSourceTableReaders.computeIfAbsent(powerAdapter.simPowerSource) {
                     PowerSourceTableReaderImpl(
                         it,
                         startTime,
                     )
                 }
+
                 powerSourceReader.record(now)
                 this.monitor.record(powerSourceReader.copy())
                 powerSourceReader.reset()
@@ -177,6 +180,18 @@ public class ComputeMetricReader(
                     batteryReader.record(now)
                     this.monitor.record(batteryReader.copy())
                     batteryReader.reset()
+                } else {
+                    val powerSourceReader = this.powerSourceTableReaders.computeIfAbsent(powerAdapter.simPowerSource) {
+                        PowerSourceTableReaderImpl(
+                            it,
+                            startTime,
+                        )
+                    }
+
+
+                    powerSourceReader.record(now)
+                    this.monitor.record(powerSourceReader.copy())
+                    powerSourceReader.reset()
                 }
 
             }

@@ -17,14 +17,14 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
     private final double capacity; // the capacity of the battery (in J = Watt * second)
     private final double chargeCurrent; // the charge current (in W)
     private double chargeLevel = 0.0f; // the charge level (in J = Watt * second)
+    private double chargeReceived = 0.0f;
+    private double totalChargeReceived = 0.0f;
 
     enum STATE {
         CHARGING,
         IDLE,
         DEPLETING
     }
-
-    private long chargeDuration = 0; //
 
     STATE state = STATE.DEPLETING;
 
@@ -76,6 +76,10 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
         return this.chargeLevel;
     }
 
+    public double getTotalChargeReceived() {
+        return this.totalChargeReceived;
+    }
+
     public String getStateString() {
         return this.state.toString();
     }
@@ -90,6 +94,14 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
 
     public void setIdle() {
         this.state = STATE.IDLE;
+    }
+
+    public boolean isCharging() {
+        return this.state == STATE.CHARGING;
+    }
+
+    public boolean isEmpty() {
+        return chargeLevel < capacity * 0.01;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructors
@@ -117,11 +129,8 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
 
         if (state == STATE.CHARGING) {
             powerSupplied = 0.0; // no power should be supplied to the adapter
-            if (chargeLevel < capacity * 0.9999) {
-                // newMaxDemand = current (in W) * duration (in s)
-                double newMaxDemand = chargeCurrent * (chargeDuration / 60);
-                double newChargeDemand = Math.min((capacity - chargeLevel), newMaxDemand);
-                this.pushDemand(this.supplierEdge, newChargeDemand);
+            if (chargeLevel < capacity * 0.99) {
+                this.pushDemand(this.supplierEdge, chargeCurrent);
             } else {
                 state = STATE.IDLE;
             }
@@ -132,9 +141,8 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
             if (powerSupply != this.powerSupplied) {
                 this.pushSupply(this.consumerEdge, powerSupply);
             }
-        }
-        else if (state == STATE.IDLE) {
-            powerSupplied = 0.0; // no power should be supplied to the adapter
+        } else if (state == STATE.IDLE) {
+
         }
 
         return Long.MAX_VALUE;
@@ -153,12 +161,14 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
 
 
         long duration = now - lastUpdate;
-        this.chargeDuration = duration;
         if (duration > 0) {
             double energyUsage = (this.powerSupplied * duration * 0.001);
-
-            // Compute the energy usage of the machine
             this.totalEnergyUsage += energyUsage;
+            this.chargeLevel -= energyUsage;
+
+            double energyReceived = (this.chargeReceived * duration * 0.001);
+            this.totalChargeReceived += energyReceived;
+            this.chargeLevel += energyReceived;
         }
     }
 
@@ -175,7 +185,6 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
     @Override
     public void pushSupply(FlowEdge consumerEdge, double newSupply) {
         this.powerSupplied = newSupply;
-        this.chargeLevel -= newSupply;
         consumerEdge.pushSupply(newSupply);
     }
 
@@ -196,7 +205,7 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
 
     @Override
     public void handleSupply(FlowEdge supplierEdge, double newSupply) {
-        this.chargeLevel += newSupply;
+        this.chargeReceived = newSupply;
     }
 
     @Override

@@ -63,6 +63,16 @@ public interface PowerSourceTableReader : Exportable {
     public val energyUsage: Double
 
     /**
+     * The total energy consumption of the battery since last sample in J.
+     */
+    public val energyUsageBattery: Double
+
+    /**
+     * The total energy consumption of the adapter since last sample in J.
+     */
+    public val energyUsageAdapter: Double
+
+    /**
      * The current carbon intensity of the host in gCO2 / kW.
      */
     public val carbonIntensity: Double

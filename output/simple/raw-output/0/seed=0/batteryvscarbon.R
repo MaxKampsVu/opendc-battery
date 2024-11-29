@@ -60,6 +60,36 @@ charge_plot <- ggplot(data_battery, aes(x = timestamp, y = charge_level)) +
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
+# Create the plot
+energy_usage_plot <- ggplot(data, aes(x = timestamp)) +
+  
+  # Plot the energy usage lines
+  geom_line(aes(y = energy_usage_battery, color = "Battery Energy Usage"), size = 1) +
+  geom_line(aes(y = energy_usage_adapter, color = "Adapter Energy Usage"), size = 1) +
+  geom_line(aes(y = energy_usage, color = "Total Energy Usage"), size = 1) +
+  
+  # Plot the power draw from the battery
+  geom_line(aes(y = power_draw, color = "Battery Power Draw"), size = 1, linetype = "dashed") +
+  
+  # Customizing the plot
+  labs(
+    title = "Energy Usage and Power Draw Over Time",
+    x = "Timestamp",
+    y = "Value",
+    color = "Legend"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "top") +
+  scale_color_manual(
+    values = c(
+      "Battery Energy Usage" = "purple",
+      "Adapter Energy Usage" = "orange",
+      "Total Energy Usage" = "blue",
+      "Battery Power Draw" = "green"
+    )
+  )
+
 # Print both plots
-print(main_plot)
+#print(main_plot)
+energy_usage_plot
 #print(charge_plot)

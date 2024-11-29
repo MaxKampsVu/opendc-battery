@@ -15,19 +15,21 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
     private FlowEdge batterySupplierEdge;
     private FlowEdge powerSourceSupplierEdge;
 
-    private double powerDemand = 0.0f;
-    private double powerSupplied = 0.0f;
-    private double totalEnergyUsage = 0.0f;
+    private double adapterPowerDemand = 0.0f;
+    private double adapterPowerSupplied = 0.0f;
+    private double adapterTotalEnergyUsage = 0.0f;
 
     private CarbonPolicy carbonPolicy;
     private boolean greenEnergyAvailable = false;
 
-    public BatteryPowerAdapter(FlowGraph graph, double max_capacity, List<CarbonFragment> carbonFragments, long startTime, CarbonPolicy carbonPolicy) {
+    private long lastUpdate;
+
+    public BatteryPowerAdapter(FlowGraph graph, double max_capacity, List<CarbonFragment> carbonFragments, long startTime, CarbonPolicy carbonPolicy, SimBattery battery) {
         //initialize powerSource in super class
-        super(graph, new MultiSimPowerSource(graph, max_capacity, carbonFragments, startTime));
+        super(graph, new MultiSimPowerSource(graph, max_capacity, carbonFragments, startTime, battery));
 
         //connect battery and powerSource to each other
-        battery = new SimBattery(graph, 360000000, 1);
+        this.battery = battery;
         batterySupplierEdge = new FlowEdge(battery, powerSource);
         battery.addSupplierEdge(batterySupplierEdge);
         ((MultiSimPowerSource)powerSource).addBatteryEdge(batterySupplierEdge);
@@ -38,40 +40,27 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
 
         //add the carbon policy
         this.carbonPolicy = carbonPolicy;
+
+        lastUpdate = this.clock.millis();
     }
 
-    public SimBattery getSimBattery() {
-        return this.battery;
+    @Override
+    public double getPowerDemand() {
+        return this.adapterPowerDemand;
     }
 
     @Override
     public double getPowerDraw() {
-        return this.battery.getPowerDraw() + this.powerSource.getPowerDraw();
+        return this.adapterPowerSupplied;
     }
 
     @Override
     public double getEnergyUsage() {
-        return this.battery.getEnergyUsage() + this.powerSource.getEnergyUsage();
+        return this.adapterTotalEnergyUsage;
     }
 
-    public double getPowerSourcePowerDraw() {
-        return this.powerSource.getPowerDraw();
-    }
-
-    public double getPowerSourceEnergyUsage() {
-        return this.powerSource.getEnergyUsage();
-    }
-
-    public double getBatteryPowerDraw() {
-        return this.battery.getPowerDraw();
-    }
-
-    public double getBatteryEnergyUsage() {
-        return this.battery.getEnergyUsage();
-    }
-
-    public boolean isGreenEnergyAvailable() {
-        return this.greenEnergyAvailable;
+    public SimBattery getSimBattery() {
+        return this.battery;
     }
 
     @Override
@@ -81,25 +70,59 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
         this.closeNode();
     }
 
+    public void printStatistics() {
+        System.out.println("___________________________");
+        System.out.println("Adapter energy usage: " + this.adapterTotalEnergyUsage);
+        System.out.println("Battery + Adapter Energy usage combined: " + (battery.getEnergyUsage() + ((MultiSimPowerSource) powerSource).getAdapterEnergyUsage()));
+
+
+        System.out.println("Power source total energy usage: " + (powerSource.getEnergyUsage()));
+        System.out.println("Power source battery energy usage: " + ((MultiSimPowerSource)powerSource).getBatteryEnergyUsage());
+        System.out.println("Power source adapter energy usage: " + ((MultiSimPowerSource)powerSource).getAdapterEnergyUsage());
+
+        System.out.println("Battery charge received: " + battery.getTotalChargeReceived());
+        System.out.println("Battery energy usage: " + battery.getEnergyUsage());
+        System.out.println("___________________________");
+
+    }
+
+    int x = 0;
+
     @Override
     public long onUpdate(long now) {
+
         //Compute if green energy is available
         double carbonIntensity = powerSource.getCarbonIntensity();
         greenEnergyAvailable = carbonPolicy.greenEnergyAvailable(carbonIntensity, now);
         //Trigger supply push in powerSource and battery
         powerSource.onUpdate(now);
         battery.onUpdate(now);
+        //Update the energy supplied
+        updateCounters(now);
+
+
+        if (x < 50) {
+            printStatistics();
+            x++;
+        }
 
         return Long.MAX_VALUE;
     }
 
     @Override
-    public void updateCounters() {
+    public void updateCounters(long now) {
+        long lastUpdate = this.lastUpdate;
+        this.lastUpdate = now;
 
+        long duration = now - lastUpdate;
+        if (duration > 0) {
+            double energyUsage = (this.adapterPowerSupplied * duration * 0.001);
+            this.adapterTotalEnergyUsage += energyUsage;
+        }
     }
 
     @Override
-    public void updateCounters(long now) {
+    public void updateCounters() {
 
     }
 
@@ -114,6 +137,7 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
      */
     @Override
     public void handleDemand(FlowEdge consumerEdge, double newPowerDemand) {
+        this.adapterPowerDemand = newPowerDemand;
         this.pushDemand(consumerEdge, newPowerDemand);
         this.invalidate();
     }
@@ -149,6 +173,7 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
      */
     @Override
     public void handleSupply(FlowEdge supplierEdge, double newSupply) {
+        this.adapterPowerSupplied = newSupply;
         this.pushSupply(muxEdge, newSupply);
         this.invalidate();
     }
@@ -164,13 +189,12 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
             powerSource.handleDemand(powerSourceSupplierEdge, newDemand);
             battery.setCharging();
         } else {
-            if (battery.getChargeLevel() < newDemand) {
+            if (battery.isEmpty()) {
                 battery.setIdle();
                 powerSource.handleDemand(powerSourceSupplierEdge, newDemand);
             } else {
                 battery.setDepleting();
                 battery.handleDemand(batterySupplierEdge, newDemand);
-                powerSource.handleDemand(powerSourceSupplierEdge, 0);
             }
         }
     }

@@ -33,11 +33,11 @@ import org.opendc.simulator.engine.FlowSupplier;
  * A {@link SimPsu} implementation that estimates the power consumption based on CPU usage.
  */
 public class SimPowerSource extends FlowNode implements FlowSupplier {
-    protected long lastUpdate;
+    private long lastUpdate;
 
     private double powerDemand = 0.0f;
     private double powerSupplied = 0.0f;
-    protected double totalEnergyUsage = 0.0f;
+    private double totalEnergyUsage = 0.0f;
 
     private double carbonIntensity = 0.0f;
     private double totalCarbonEmission = 0.0f;

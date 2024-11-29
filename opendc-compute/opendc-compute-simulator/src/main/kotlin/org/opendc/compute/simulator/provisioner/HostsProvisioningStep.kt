@@ -22,6 +22,7 @@
 
 package org.opendc.compute.simulator.provisioner
 
+import org.apache.commons.math3.analysis.function.Pow
 import org.opendc.compute.carbon.getCarbonFragments
 import org.opendc.compute.simulator.host.SimHost
 import org.opendc.compute.simulator.service.ComputeService
@@ -30,6 +31,7 @@ import org.opendc.compute.topology.specs.HostSpec
 import org.opendc.simulator.Multiplexer
 import org.opendc.simulator.compute.power.battery.PowerAdapter
 import org.opendc.simulator.compute.power.battery.BatteryPowerAdapter
+import org.opendc.simulator.compute.power.battery.SimBattery
 import org.opendc.simulator.compute.power.battery.StubPowerAdapter
 import org.opendc.simulator.compute.power.battery.greenenergy.CarbonPolicy
 import org.opendc.simulator.compute.power.battery.greenenergy.SimpleCarbonPolicy
@@ -61,31 +63,30 @@ public class HostsProvisioningStep internal constructor(
         for (cluster in clusterSpecs) {
             // Create the Power Source to which hosts are connected
 
-            val carbonFragments = getCarbonFragments("carbon_traces/sin_carbon_trace.parquet")
+            val carbonFragments = getCarbonFragments("carbon_traces/carbon_2012.parquet")
 
+            val battery = false
 
-            val powerAdapter = BatteryPowerAdapter(
-                graph,
-                cluster.powerSource.totalPower.toDouble(),
-                carbonFragments,
-                startTime,
-                SimpleCarbonPolicy()
-            )
-
-
-
-
-            /*
-            val powerAdapter = StubPowerAdapter(
-                graph,
-                cluster.powerSource.totalPower.toDouble(),
-                carbonFragments,
-                startTime
-            )
-             */
-
-
-
+            var powerAdapter: PowerAdapter
+            if (battery) {
+                val max_capacity = 100000000.0 * 3 // J
+                val current = 2000.0 // W
+                powerAdapter = BatteryPowerAdapter(
+                    graph,
+                    cluster.powerSource.totalPower.toDouble(),
+                    carbonFragments,
+                    startTime,
+                    SimpleCarbonPolicy(),
+                    SimBattery(graph, max_capacity, current)
+                )
+            } else {
+                powerAdapter = StubPowerAdapter(
+                    graph,
+                    cluster.powerSource.totalPower.toDouble(),
+                    carbonFragments,
+                    startTime
+                )
+            }
 
             service.addPowerSource(powerAdapter)
             powerAdapters.add(powerAdapter)

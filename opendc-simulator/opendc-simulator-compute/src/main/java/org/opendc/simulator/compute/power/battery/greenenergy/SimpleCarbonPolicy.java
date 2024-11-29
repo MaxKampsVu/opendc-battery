@@ -6,6 +6,5 @@ public class SimpleCarbonPolicy implements CarbonPolicy {
     @Override
     public boolean greenEnergyAvailable(double carbonIntensity, long now) {
         return carbonIntensity < carbonIntensityThreshold;
-        //return true;
     }
 }
