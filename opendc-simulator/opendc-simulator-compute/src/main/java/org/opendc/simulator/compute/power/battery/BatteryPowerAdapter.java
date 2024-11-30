@@ -15,9 +15,13 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
     private FlowEdge batterySupplierEdge;
     private FlowEdge powerSourceSupplierEdge;
 
-    private double adapterPowerDemand = 0.0f;
-    private double adapterPowerSupplied = 0.0f;
-    private double adapterTotalEnergyUsage = 0.0f;
+    private double combinedPowerDemand = 0.0f;
+    private double combinedPowerSupplied = 0.0f;
+    private double combinedTotalEnergyUsage = 0.0f;
+
+    private double batteryPowerSupplied = 0.0f;
+
+    private double powerSourcePowerSupplied = 0.0f;
 
     private CarbonPolicy carbonPolicy;
     private boolean greenEnergyAvailable = false;
@@ -46,17 +50,33 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
 
     @Override
     public double getPowerDemand() {
-        return this.adapterPowerDemand;
+        return this.combinedPowerDemand;
     }
 
     @Override
     public double getPowerDraw() {
-        return this.adapterPowerSupplied;
+        return this.combinedPowerSupplied;
     }
 
     @Override
     public double getEnergyUsage() {
-        return this.adapterTotalEnergyUsage;
+        return this.combinedTotalEnergyUsage;
+    }
+
+    public double getBatteryPowerSupplied() {
+        return this.batteryPowerSupplied;
+    }
+
+    public double getPSUPowerSupplied() {
+        return this.powerSourcePowerSupplied;
+    }
+
+    public double getPowerSourceEnergyUsage() {
+        return this.batteryPowerSupplied;
+    }
+
+    public double getBatteryEnergyUsage() {
+        return this.powerSourcePowerSupplied;
     }
 
     public SimBattery getSimBattery() {
@@ -68,22 +88,6 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
         powerSource.close();
         battery.close();
         this.closeNode();
-    }
-
-    public void printStatistics() {
-        System.out.println("___________________________");
-        System.out.println("Adapter energy usage: " + this.adapterTotalEnergyUsage);
-        System.out.println("Battery + Adapter Energy usage combined: " + (battery.getEnergyUsage() + ((MultiSimPowerSource) powerSource).getAdapterEnergyUsage()));
-
-
-        System.out.println("Power source total energy usage: " + (powerSource.getEnergyUsage()));
-        System.out.println("Power source battery energy usage: " + ((MultiSimPowerSource)powerSource).getBatteryEnergyUsage());
-        System.out.println("Power source adapter energy usage: " + ((MultiSimPowerSource)powerSource).getAdapterEnergyUsage());
-
-        System.out.println("Battery charge received: " + battery.getTotalChargeReceived());
-        System.out.println("Battery energy usage: " + battery.getEnergyUsage());
-        System.out.println("___________________________");
-
     }
 
     int x = 0;
@@ -100,12 +104,6 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
         //Update the energy supplied
         updateCounters(now);
 
-
-        if (x < 50) {
-            printStatistics();
-            x++;
-        }
-
         return Long.MAX_VALUE;
     }
 
@@ -116,8 +114,8 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
 
         long duration = now - lastUpdate;
         if (duration > 0) {
-            double energyUsage = (this.adapterPowerSupplied * duration * 0.001);
-            this.adapterTotalEnergyUsage += energyUsage;
+            double energyUsage = (this.combinedPowerSupplied * duration * 0.001);
+            this.combinedTotalEnergyUsage += energyUsage;
         }
     }
 
@@ -137,7 +135,7 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
      */
     @Override
     public void handleDemand(FlowEdge consumerEdge, double newPowerDemand) {
-        this.adapterPowerDemand = newPowerDemand;
+        this.combinedPowerDemand = newPowerDemand;
         this.pushDemand(consumerEdge, newPowerDemand);
         this.invalidate();
     }
@@ -173,7 +171,13 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
      */
     @Override
     public void handleSupply(FlowEdge supplierEdge, double newSupply) {
-        this.adapterPowerSupplied = newSupply;
+        this.combinedPowerSupplied = newSupply;
+
+        if (supplierEdge.equals(batterySupplierEdge))
+            batteryPowerSupplied = newSupply;
+        else
+            powerSourcePowerSupplied = newSupply;
+
         this.pushSupply(muxEdge, newSupply);
         this.invalidate();
     }
@@ -208,4 +212,5 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
     public void removeSupplierEdge(FlowEdge supplierEdge) {
         //TODO: Figure out how to handle
     }
+
 }

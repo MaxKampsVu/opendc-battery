@@ -20,6 +20,9 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
     private double chargeReceived = 0.0f;
     private double totalChargeReceived = 0.0f;
 
+    private final double lowerBound = 0.01f;
+    private final double upperBound = 0.99f;
+
     enum STATE {
         CHARGING,
         IDLE,
@@ -101,7 +104,7 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
     }
 
     public boolean isEmpty() {
-        return chargeLevel < capacity * 0.01;
+        return chargeLevel < capacity * lowerBound;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructors
@@ -129,7 +132,7 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
 
         if (state == STATE.CHARGING) {
             powerSupplied = 0.0; // no power should be supplied to the adapter
-            if (chargeLevel < capacity * 0.99) {
+            if (chargeLevel < capacity * upperBound) {
                 this.pushDemand(this.supplierEdge, chargeCurrent);
             } else {
                 state = STATE.IDLE;

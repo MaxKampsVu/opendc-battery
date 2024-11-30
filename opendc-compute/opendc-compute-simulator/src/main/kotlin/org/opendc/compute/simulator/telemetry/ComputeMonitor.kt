@@ -22,6 +22,7 @@
 
 package org.opendc.compute.simulator.telemetry
 
+import org.opendc.compute.simulator.telemetry.table.BatteryAdapterTableReader
 import org.opendc.compute.simulator.telemetry.table.BatteryTableReader
 import org.opendc.compute.simulator.telemetry.table.HostTableReader
 import org.opendc.compute.simulator.telemetry.table.PowerSourceTableReader
@@ -51,6 +52,11 @@ public interface ComputeMonitor {
      * Record an entry with the specified [reader].
      */
     public fun record(reader: BatteryTableReader) {}
+
+    /**
+     * Record an entry with the specified [reader].
+     */
+    public fun record(reader: BatteryAdapterTableReader) {}
 
     /**
      * Record an entry with the specified [reader].

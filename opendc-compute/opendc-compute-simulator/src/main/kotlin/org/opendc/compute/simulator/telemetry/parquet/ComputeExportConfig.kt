@@ -36,6 +36,7 @@ import kotlinx.serialization.json.JsonDecoder
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import org.opendc.common.logger.logger
+import org.opendc.compute.simulator.telemetry.table.BatteryAdapterTableReader
 import org.opendc.compute.simulator.telemetry.table.BatteryTableReader
 import org.opendc.compute.simulator.telemetry.table.HostTableReader
 import org.opendc.compute.simulator.telemetry.table.PowerSourceTableReader
@@ -62,6 +63,7 @@ public data class ComputeExportConfig(
     public val taskExportColumns: Set<ExportColumn<TaskTableReader>>,
     public val powerSourceExportColumns: Set<ExportColumn<PowerSourceTableReader>>,
     public val batteryExportColumns: Set<ExportColumn<BatteryTableReader>>,
+    public val batteryAdapterExportColumns: Set<ExportColumn<BatteryAdapterTableReader>>,
     public val serviceExportColumns: Set<ExportColumn<ServiceTableReader>>,
 ) {
     public constructor(
@@ -69,12 +71,14 @@ public data class ComputeExportConfig(
         taskExportColumns: Collection<ExportColumn<TaskTableReader>>,
         powerSourceExportColumns: Collection<ExportColumn<PowerSourceTableReader>>,
         batteryExportColumns: Collection<ExportColumn<BatteryTableReader>>,
+        batteryAdapterExportColumns: Collection<ExportColumn<BatteryAdapterTableReader>>,
         serviceExportColumns: Collection<ExportColumn<ServiceTableReader>>,
     ) : this(
         hostExportColumns.toSet() + DfltHostExportColumns.BASE_EXPORT_COLUMNS,
         taskExportColumns.toSet() + DfltTaskExportColumns.BASE_EXPORT_COLUMNS,
         powerSourceExportColumns.toSet() + DfltPowerSourceExportColumns.BASE_EXPORT_COLUMNS,
         batteryExportColumns.toSet() + DfltBatteryExportColumns.BASE_EXPORT_COLUMNS,
+        batteryAdapterExportColumns.toSet() + DfltBatteryAdapterExportColumns.BASE_EXPORT_COLUMNS,
         serviceExportColumns.toSet() + DfltServiceExportColumns.BASE_EXPORT_COLUMNS,
     )
 
@@ -88,6 +92,7 @@ public data class ComputeExportConfig(
         | Task columns  : ${taskExportColumns.map { it.name }.toString().trim('[', ']')}
         | Power Source columns : ${powerSourceExportColumns.map { it.name }.toString().trim('[', ']')}
         | Battery columns: ${batteryExportColumns.map { it.name }.toString().trim('[', ']')}
+        | Battery Adapter columns:  ${batteryAdapterExportColumns.map { it.name }.toString().trim('[', ']')}
         | Service columns : ${serviceExportColumns.map { it.name }.toString().trim('[', ']')}
         """.trimIndent()
 
@@ -103,6 +108,7 @@ public data class ComputeExportConfig(
             DfltTaskExportColumns
             DfltPowerSourceExportColumns
             DfltBatteryExportColumns
+            DfltBatteryAdapterExportColumns
             DfltServiceExportColumns
         }
 
@@ -118,6 +124,7 @@ public data class ComputeExportConfig(
                 taskExportColumns = ExportColumn.getAllLoadedColumns(),
                 powerSourceExportColumns = ExportColumn.getAllLoadedColumns(),
                 batteryExportColumns = ExportColumn.getAllLoadedColumns(),
+                batteryAdapterExportColumns = ExportColumn.getAllLoadedColumns(),
                 serviceExportColumns = ExportColumn.getAllLoadedColumns(),
             )
         }
@@ -147,6 +154,10 @@ public data class ComputeExportConfig(
                         ListSerializer(columnSerializer<ServiceTableReader>()).descriptor,
                     )
                     element(
+                        "batteryAdapterExportColumns",
+                        ListSerializer(columnSerializer<ServiceTableReader>()).descriptor,
+                    )
+                    element(
                         "serviceExportColumns",
                         ListSerializer(columnSerializer<ServiceTableReader>()).descriptor,
                     )
@@ -167,6 +178,7 @@ public data class ComputeExportConfig(
                 val taskFields: List<ExportColumn<TaskTableReader>> = elem["taskExportColumns"].toFieldList()
                 val powerSourceFields: List<ExportColumn<PowerSourceTableReader>> = elem["powerSourceExportColumns"].toFieldList()
                 val batteryFields: List<ExportColumn<BatteryTableReader>> = elem["batteryExportColumns"].toFieldList()
+                val batteryAdapterFields: List<ExportColumn<BatteryAdapterTableReader>> = elem["batteryAdapterExportColumns"].toFieldList()
                 val serviceFields: List<ExportColumn<ServiceTableReader>> = elem["serviceExportColumns"].toFieldList()
 
                 return ComputeExportConfig(
@@ -174,6 +186,7 @@ public data class ComputeExportConfig(
                     taskExportColumns = taskFields,
                     powerSourceExportColumns = powerSourceFields,
                     batteryExportColumns = batteryFields,
+                    batteryAdapterExportColumns = batteryAdapterFields,
                     serviceExportColumns = serviceFields,
                 )
             }
@@ -203,13 +216,19 @@ public data class ComputeExportConfig(
                     )
                     encodeSerializableElement(
                         descriptor,
-                        2,
+                        3,
                         ColListSerializer(columnSerializer<BatteryTableReader>()),
                         value.batteryExportColumns.toList(),
                     )
                     encodeSerializableElement(
                         descriptor,
-                        3,
+                        4,
+                        ColListSerializer(columnSerializer<BatteryAdapterTableReader>()),
+                        value.batteryAdapterExportColumns.toList(),
+                    )
+                    encodeSerializableElement(
+                        descriptor,
+                        5,
                         ColListSerializer(columnSerializer<ServiceTableReader>()),
                         value.serviceExportColumns.toList(),
                     )

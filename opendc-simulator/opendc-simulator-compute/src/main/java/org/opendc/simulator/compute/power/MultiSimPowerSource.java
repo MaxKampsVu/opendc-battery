@@ -85,6 +85,7 @@ public class MultiSimPowerSource extends SimPowerSource {
         if (duration > 0) {
             double batteryEnergyUsage = (this.batteryPowerSupplied * duration * 0.001);
             this.batteryEnergyUsage += batteryEnergyUsage;
+            this.totalCarbonEmission += this.carbonIntensity * (batteryEnergyUsage / 3600000.0);
         }
     }
 

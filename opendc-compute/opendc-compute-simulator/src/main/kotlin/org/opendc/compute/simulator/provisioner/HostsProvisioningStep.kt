@@ -65,12 +65,12 @@ public class HostsProvisioningStep internal constructor(
 
             val carbonFragments = getCarbonFragments("carbon_traces/carbon_2012.parquet")
 
-            val battery = false
+            val battery = true
 
             var powerAdapter: PowerAdapter
             if (battery) {
-                val max_capacity = 100000000.0 * 3 // J
-                val current = 2000.0 // W
+                val max_capacity = 10000000.0 // J
+                val current = 11000.0 // W
                 powerAdapter = BatteryPowerAdapter(
                     graph,
                     cluster.powerSource.totalPower.toDouble(),

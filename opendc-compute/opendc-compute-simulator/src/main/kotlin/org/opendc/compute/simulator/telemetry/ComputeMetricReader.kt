@@ -32,6 +32,8 @@ import org.opendc.common.asCoroutineDispatcher
 import org.opendc.compute.simulator.host.SimHost
 import org.opendc.compute.simulator.service.ComputeService
 import org.opendc.compute.simulator.service.ServiceTask
+import org.opendc.compute.simulator.telemetry.table.BatteryAdapterTableReader
+import org.opendc.compute.simulator.telemetry.table.BatteryAdapterTableReaderImpl
 import org.opendc.compute.simulator.telemetry.table.BatteryTableReader
 import org.opendc.compute.simulator.telemetry.table.BatteryTableReaderImpl
 import org.opendc.compute.simulator.telemetry.table.HostTableReaderImpl
@@ -97,7 +99,8 @@ public class ComputeMetricReader(
 
     private val batteryTableReaders = mutableMapOf<SimBattery, BatteryTableReader>()
 
-    private val carbonPolicyTableReaders = mutableMapOf<CarbonPolicy, PowerSourceTableReader>()
+    private val batteryAdapterTableReaders = mutableMapOf<BatteryPowerAdapter, BatteryAdapterTableReader>()
+
 
     /**
      * The background job that is responsible for collecting the metrics every cycle.
@@ -180,20 +183,17 @@ public class ComputeMetricReader(
                     batteryReader.record(now)
                     this.monitor.record(batteryReader.copy())
                     batteryReader.reset()
-                } else {
-                    val powerSourceReader = this.powerSourceTableReaders.computeIfAbsent(powerAdapter.simPowerSource) {
-                        PowerSourceTableReaderImpl(
+
+                    val batteryAdapterReader = this.batteryAdapterTableReaders.computeIfAbsent(powerAdapter) {
+                        BatteryAdapterTableReaderImpl(
                             it,
                             startTime,
                         )
                     }
-
-
-                    powerSourceReader.record(now)
-                    this.monitor.record(powerSourceReader.copy())
-                    powerSourceReader.reset()
+                    batteryAdapterReader.record(now)
+                    this.monitor.record(batteryAdapterReader.copy())
+                    batteryAdapterReader.reset()
                 }
-
             }
 
             this.serviceTableReader.record(now)

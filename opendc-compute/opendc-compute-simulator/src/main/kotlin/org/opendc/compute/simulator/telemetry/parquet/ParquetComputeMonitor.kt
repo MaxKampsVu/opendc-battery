@@ -23,6 +23,7 @@
 package org.opendc.compute.simulator.telemetry.parquet
 
 import org.opendc.compute.simulator.telemetry.ComputeMonitor
+import org.opendc.compute.simulator.telemetry.table.BatteryAdapterTableReader
 import org.opendc.compute.simulator.telemetry.table.BatteryTableReader
 import org.opendc.compute.simulator.telemetry.table.HostTableReader
 import org.opendc.compute.simulator.telemetry.table.PowerSourceTableReader
@@ -41,6 +42,7 @@ public class ParquetComputeMonitor(
     private val taskExporter: Exporter<TaskTableReader>,
     private val powerSourceExporter: Exporter<PowerSourceTableReader>,
     private val batteryExporter: Exporter<BatteryTableReader>,
+    private val batteryAdapterExporter: Exporter<BatteryAdapterTableReader>,
     private val serviceExporter: Exporter<ServiceTableReader>,
 ) : ComputeMonitor, AutoCloseable {
     override fun record(reader: HostTableReader) {
@@ -59,6 +61,10 @@ public class ParquetComputeMonitor(
         batteryExporter.write(reader)
     }
 
+    override fun record(reader: BatteryAdapterTableReader) {
+        batteryAdapterExporter.write(reader)
+    }
+
     override fun record(reader: ServiceTableReader) {
         serviceExporter.write(reader)
     }
@@ -68,6 +74,7 @@ public class ParquetComputeMonitor(
         taskExporter.close()
         powerSourceExporter.close()
         batteryExporter.close()
+        batteryAdapterExporter.close()
         serviceExporter.close()
     }
 
@@ -93,6 +100,7 @@ public class ParquetComputeMonitor(
                 taskExportColumns = computeExportConfig.taskExportColumns,
                 powerSourceExportColumns = computeExportConfig.powerSourceExportColumns,
                 batteryExportColumns = computeExportConfig.batteryExportColumns,
+                batteryAdapterExportColumns = computeExportConfig.batteryAdapterExportColumns,
                 serviceExportColumns = computeExportConfig.serviceExportColumns,
             )
 
@@ -113,6 +121,7 @@ public class ParquetComputeMonitor(
             taskExportColumns: Collection<ExportColumn<TaskTableReader>>? = null,
             powerSourceExportColumns: Collection<ExportColumn<PowerSourceTableReader>>? = null,
             batteryExportColumns: Collection<ExportColumn<BatteryTableReader>>? = null,
+            batteryAdapterExportColumns: Collection<ExportColumn<BatteryAdapterTableReader>>? = null,
             serviceExportColumns: Collection<ExportColumn<ServiceTableReader>>? = null,
         ): ParquetComputeMonitor {
             // Loads the fields in case they need to be retrieved if optional params are omitted.
@@ -143,6 +152,12 @@ public class ParquetComputeMonitor(
                         columns =  batteryExportColumns ?: Exportable.getAllLoadedColumns(),
                         bufferSize = bufferSize,
                     ),
+                batteryAdapterExporter =
+                Exporter(
+                    outputFile = File(base, "$partition/batteryAdapter.parquet").also { it.parentFile.mkdirs() },
+                    columns =  batteryAdapterExportColumns ?: Exportable.getAllLoadedColumns(),
+                    bufferSize = bufferSize,
+                ),
                 serviceExporter =
                     Exporter(
                         outputFile = File(base, "$partition/service.parquet").also { it.parentFile.mkdirs() },
