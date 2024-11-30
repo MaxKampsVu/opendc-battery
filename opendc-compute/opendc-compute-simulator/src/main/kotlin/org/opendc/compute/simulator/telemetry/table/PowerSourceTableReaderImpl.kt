@@ -125,6 +125,10 @@ public class PowerSourceTableReaderImpl(
     override fun reset() {
         previousEnergyUsage = _energyUsage
         previousCarbonEmission = _carbonEmission
+        previousEnergyUsageAdapter = _energyUsageAdapter
+        previousEnergyUsageBattery = _energyUsageBattery
+
+
 
         _hostsConnected = 0
         _powerDraw = 0.0

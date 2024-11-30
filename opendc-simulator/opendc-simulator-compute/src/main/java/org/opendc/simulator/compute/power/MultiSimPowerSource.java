@@ -6,6 +6,9 @@ import org.opendc.simulator.engine.FlowGraph;
 
 import java.util.List;
 
+/**
+ * Behaves like a SimPowerSource but also supplies power to a Battery
+ */
 public class MultiSimPowerSource extends SimPowerSource {
     private FlowEdge batteryEdge;
     private long lastBatteryUpdate;
@@ -22,14 +25,16 @@ public class MultiSimPowerSource extends SimPowerSource {
         this.battery = battery;
     }
 
-
+    /**
+     * @return the power demand of the adapter and the battery (in W)
+     */
     @Override
     public double getPowerDemand() {
         return super.getPowerDemand() + batteryPowerDemand;
     }
 
     /**
-     * Return the instantaneous power usage of the machine (in W) measured at the InPort of the power supply.
+     * @return the power draw to the adapter and the battery (in W)
      */
     @Override
     public double getPowerDraw() {
@@ -37,22 +42,32 @@ public class MultiSimPowerSource extends SimPowerSource {
     }
 
     /**
-     * Return the cumulated energy usage of the machine (in J) measured at the InPort of the powers supply.
+     * @return the cumulated energy usage of the adapter and battery (in J)
      */
     @Override
     public double getEnergyUsage() {
         return super.getEnergyUsage() + batteryEnergyUsage;
     }
 
+    /**
+     * @return the cumulated energy usage of the adapter
+     */
     public double getAdapterEnergyUsage() {
         return super.getEnergyUsage();
     }
 
+    /**
+     * @return the cumulated energy usage of the battery
+     */
     public double getBatteryEnergyUsage() {
         return this.batteryEnergyUsage;
     }
 
-
+    /**
+     * Supply power to the adapter and the battery
+     * @param now The virtual timestamp in milliseconds after epoch at which the update is occurring.
+     * @return
+     */
     @Override
     public long onUpdate(long now) {
         updateCounters(now);
@@ -63,10 +78,13 @@ public class MultiSimPowerSource extends SimPowerSource {
         return Long.MAX_VALUE;
     }
 
+    /**
+     * Supply power to the battery
+     */
     private void supplyBatteryEdge() {
         double batteryPowerSupply = this.batteryPowerDemand;
         if (!battery.isCharging()) {
-            this.batteryPowerDemand = 0; //make sure battery is not being supplied with power if it is not chagring
+            this.batteryPowerDemand = 0; //make sure battery is not being supplied with power if it is not charging
         }
 
         if (batteryPowerSupply != this.batteryPowerSupplied) {
@@ -74,6 +92,11 @@ public class MultiSimPowerSource extends SimPowerSource {
         }
     }
 
+    /**
+     * Energy usage and carbon emissions for the adapter is computed in the super class
+     * Add the energy usage and carbon emissions for the battery
+     * @param now
+     */
     @Override
     public void updateCounters(long now) {
         super.updateCounters(now);
@@ -89,6 +112,11 @@ public class MultiSimPowerSource extends SimPowerSource {
         }
     }
 
+    /**
+     * Determine if demand is from the battery or the adapter and handle it accordingly
+     * @param consumerEdge
+     * @param newPowerDemand
+     */
     @Override
     public void handleDemand(FlowEdge consumerEdge, double newPowerDemand) {
         if (consumerEdge.equals(batteryEdge)) {
@@ -99,6 +127,11 @@ public class MultiSimPowerSource extends SimPowerSource {
         }
     }
 
+    /**
+     * Determine if supply is for the battery or the adapter and supply accordingly
+     * @param consumerEdge
+     * @param newSupply
+     */
     @Override
     public void pushSupply(FlowEdge consumerEdge, double newSupply) {
         if (consumerEdge.equals(batteryEdge)) {

@@ -7,82 +7,88 @@ import org.opendc.simulator.engine.FlowGraph;
 import org.opendc.simulator.engine.FlowNode;
 import org.opendc.simulator.engine.FlowSupplier;
 
+/**
+ * Battery implementation
+ */
 public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
     private long lastUpdate;
 
-    private double powerDemand = 0.0f; // the demand from the adapter
-    private double powerSupplied = 0.0f; // the demand supplied to the adapter
-    private double totalEnergyUsage = 0.0f; // the total energy supplied
+    private double powerDemand = 0.0f; // the demand from the adapter (in W)
+    private double powerSupplied = 0.0f; // the demand supplied to the adapter (in W)
+    private double totalEnergyUsage = 0.0f; // the total energy supplied (in J)
 
-    private final double capacity; // the capacity of the battery (in J = Watt * second)
+    private final double capacity; // the capacity of the battery (in J)
     private final double chargeCurrent; // the charge current (in W)
-    private double chargeLevel = 0.0f; // the charge level (in J = Watt * second)
+    private double chargeLevel = 0.0f; // the charge level (in J)
     private double chargeReceived = 0.0f;
     private double totalChargeReceived = 0.0f;
 
-    private final double lowerBound = 0.01f;
-    private final double upperBound = 0.99f;
+    private final double chargeLowerBound = 0.01f; // minimum depletion
+    private final double chargeUpperBound = 0.99f; // maximum charge level
 
     enum STATE {
-        CHARGING,
-        IDLE,
-        DEPLETING
+        CHARGING, // the battery is being charged by a SimPowerSupply
+        IDLE, // do nothing
+        DEPLETING // the battery is providing power to the Adapter
     }
 
-    STATE state = STATE.DEPLETING;
+    STATE state;
 
     private FlowEdge consumerEdge; // power from battery to adapter -> depletes the battery
     private FlowEdge supplierEdge; // power from power supply to battery -> charges the battery
 
     /**
-     * Determine whether the InPort is connected to a {@link SimCpu}.
-     *
-     * @return <code>true</code> if the InPort is connected to an OutPort, <code>false</code> otherwise.
+     * Determine whether the InPort is connected to a {@link BatteryPowerAdapter}.
      */
     public boolean isConnected() {
         return consumerEdge != null;
     }
 
     /**
-     * Return the power demand of the machine (in W) measured in the PSU.
-     * <p>
-     * This method provides access to the power consumption of the machine before PSU losses are applied.
+     * @return the power demand of the machine (in W) measured in the Battery.
      */
     public double getPowerDemand() {
         return this.powerDemand;
     }
-
-    public double getChargeSupply() {
-        return this.getPowerDemand();
-    }
-
     /**
-     * Return the instantaneous power usage of the machine (in W) measured at the InPort of the power supply.
+     * @return the instantaneous power usage of the machine (in W) measured at the InPort of the Battery.
      */
     public double getPowerDraw() {
         return this.powerSupplied;
     }
 
     /**
-     * Return the cumulated energy usage of the machine (in J) measured at the InPort of the powers supply.
+     * @return the supplied energy (in J) by the Battery.
      */
     public double getEnergyUsage() {
         return this.totalEnergyUsage;
     }
 
+    /**
+     * @return the maximum capacity of the battery (in J)
+     */
     @Override
     public double getCapacity() {
         return this.capacity;
     }
 
+    /**
+     * @return the current charge level of the battery
+     */
     public double getChargeLevel() {
         return this.chargeLevel;
     }
 
+    /**
+     * @return the total charge received
+     */
     public double getTotalChargeReceived() {
         return this.totalChargeReceived;
     }
 
+    /**
+     * @return the current state
+     */
     public String getStateString() {
         return this.state.toString();
     }
@@ -104,17 +110,25 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
     }
 
     public boolean isEmpty() {
-        return chargeLevel < capacity * lowerBound;
+        return chargeLevel < capacity * chargeLowerBound;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructors
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Create a new Battery
+     * @param graph
+     * @param max_capacity the maximum capacity (in J) to which the battery can be charged
+     * @param charge_current the current (in W) with which the battery is charged
+     */
     public SimBattery(FlowGraph graph, double max_capacity, double charge_current) {
         super(graph);
 
         this.capacity = max_capacity;
         this.chargeCurrent = charge_current;
+
+        this.state = STATE.CHARGING;
         lastUpdate = this.clock.millis();
     }
 
@@ -126,13 +140,18 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
     // FlowNode related functionality
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Based on the current state charge, discharge or set the battery to idle
+     * @param now The virtual timestamp in milliseconds after epoch at which the update is occurring.
+     * @return
+     */
     @Override
     public long onUpdate(long now) {
         updateCounters();
 
         if (state == STATE.CHARGING) {
             powerSupplied = 0.0; // no power should be supplied to the adapter
-            if (chargeLevel < capacity * upperBound) {
+            if (chargeLevel < capacity * chargeUpperBound) {
                 this.pushDemand(this.supplierEdge, chargeCurrent);
             } else {
                 state = STATE.IDLE;
@@ -179,12 +198,22 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
     // Battery as power source functionality
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * handle a power demand from the adapter
+     * @param consumerEdge to the adapter
+     * @param newPowerDemand from the multiplexer
+     */
     @Override
     public void handleDemand(FlowEdge consumerEdge, double newPowerDemand) {
         this.powerDemand = newPowerDemand;
         this.invalidate();
     }
 
+    /**
+     * push supply to the adapter
+     * @param consumerEdge to the adapter
+     * @param newSupply for the multiplexer
+     */
     @Override
     public void pushSupply(FlowEdge consumerEdge, double newSupply) {
         this.powerSupplied = newSupply;
@@ -205,12 +234,21 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
     // Charging functionality
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+    /**
+     * Handle supply form the SimPowerSource
+     * @param supplierEdge to SimPowerSource
+     * @param newSupply charge
+     */
     @Override
     public void handleSupply(FlowEdge supplierEdge, double newSupply) {
         this.chargeReceived = newSupply;
     }
 
+    /**
+     * Push new charge demand to SimPowerSource
+     * @param supplierEdge to SimPowerSource
+     * @param newDemand for charge
+     */
     @Override
     public void pushDemand(FlowEdge supplierEdge, double newDemand) {
         this.supplierEdge.pushDemand(newDemand);

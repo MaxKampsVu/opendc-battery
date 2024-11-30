@@ -6,6 +6,10 @@ import org.opendc.simulator.engine.FlowGraph;
 
 import java.util.List;
 
+/**
+ * An implementation of PowerAdapter that keeps the functionality of the simulator unchanged
+ * (only connecting a SimPowerSource to the Multiplexer)
+ */
 public final class StubPowerAdapter extends PowerAdapter {
 
     public StubPowerAdapter(FlowGraph graph, double max_capacity, List<CarbonFragment> carbonFragments, long startTime) {

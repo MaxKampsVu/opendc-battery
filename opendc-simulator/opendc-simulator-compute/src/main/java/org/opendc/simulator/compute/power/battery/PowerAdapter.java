@@ -33,7 +33,7 @@ import org.opendc.simulator.engine.FlowNode;
 import org.opendc.simulator.engine.FlowSupplier;
 
 /**
- * A {@link SimPsu} implementation that estimates the power consumption based on CPU usage.
+ * An adapter between the Multiplexer and a PowerSupply
  */
 public abstract class PowerAdapter extends FlowNode implements FlowSupplier {
     protected SimPowerSource powerSource;

@@ -63,19 +63,21 @@ public class HostsProvisioningStep internal constructor(
 
             val carbonFragments = getCarbonFragments("carbon_traces/sin_carbon_trace.parquet")
 
-            val battery = true
+            val use_battery = true
 
             var powerAdapter: PowerAdapter
-            if (battery) {
-                val max_capacity = 600000000.0 // J
-                val current = 100000.0 // W
+            if (use_battery) {
+                //TODO: Set the max capacity of the battery
+                val max_capacity_battery = 500000000.0 // J
+                //TODO: Set the max charging current of the battery
+                val current = 11500.0 // W
                 powerAdapter = BatteryPowerAdapter(
                     graph,
                     cluster.powerSource.totalPower.toDouble(),
                     carbonFragments,
                     startTime,
                     SimpleCarbonPolicy(),
-                    SimBattery(graph, max_capacity, current)
+                    SimBattery(graph, max_capacity_battery, current)
                 )
             } else {
                 powerAdapter = StubPowerAdapter(

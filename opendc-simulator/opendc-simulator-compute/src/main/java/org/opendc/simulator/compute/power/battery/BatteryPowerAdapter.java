@@ -9,13 +9,17 @@ import org.opendc.simulator.engine.FlowGraph;
 
 import java.util.List;
 
+/**
+ * An Adapter between the Multiplexer, a SimBattery and a SimPowerSource
+ * Provides power to the multiplexer from the SimBattery or SimPowerSource based on if green energy is available
+ */
 public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsumer {
     SimBattery battery;
     private FlowEdge muxEdge;
     private FlowEdge batterySupplierEdge;
-    private FlowEdge powerSourceSupplierEdge;
+    private final FlowEdge powerSourceSupplierEdge;
 
-    private double combinedPowerDemand = 0.0f;
+    private double powerDemand = 0.0f;
     private double combinedPowerSupplied = 0.0f;
     private double combinedEnergyUsage = 0.0f;
 
@@ -25,11 +29,20 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
     private double powerSourceEnergyUsage = 0.0f;
     private double powerSourcePowerSupplied = 0.0f;
 
-    private CarbonPolicy carbonPolicy;
+    private final CarbonPolicy carbonPolicy;
     private boolean greenEnergyAvailable = false;
 
     private long lastUpdate;
 
+    /**
+     * Create a new BatteryPowerAdapter
+     * @param graph
+     * @param max_capacity
+     * @param carbonFragments for the SimPowerSource
+     * @param startTime
+     * @param carbonPolicy to determine if green energy is available ore not
+     * @param battery
+     */
     public BatteryPowerAdapter(FlowGraph graph, double max_capacity, List<CarbonFragment> carbonFragments, long startTime, CarbonPolicy carbonPolicy, SimBattery battery) {
         //initialize MultiSimPowerSource in super class
         super(graph, new MultiSimPowerSource(graph, max_capacity, carbonFragments, startTime, battery));
@@ -50,25 +63,40 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
         lastUpdate = this.clock.millis();
     }
 
+    /**
+     * @return the power demand of the multiplexer
+     */
     @Override
     public double getPowerDemand() {
-        return this.combinedPowerDemand;
+        return this.powerDemand;
     }
 
+    /**
+     * @return the combined power draw from the power supply and the battery (in W)
+     */
     @Override
     public double getPowerDraw() {
         return this.combinedPowerSupplied;
     }
 
+    /**
+     * @return the combined energy usage from the power supply and the battery (in J)
+     */
     @Override
     public double getEnergyUsage() {
         return this.combinedEnergyUsage;
     }
 
+    /**
+     * @return the energy usage of the power source (in J)
+     */
     public double getPowerSourceEnergyUsage() {
         return this.powerSourceEnergyUsage;
     }
 
+    /**
+     * @return the energy usage of the battery (in J)
+     */
     public double getBatteryEnergyUsage() {
         return this.batteryEnergyUsage;
     }
@@ -132,7 +160,7 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
      */
     @Override
     public void handleDemand(FlowEdge consumerEdge, double newPowerDemand) {
-        this.combinedPowerDemand = newPowerDemand;
+        this.powerDemand = newPowerDemand;
 
         this.pushDemand(consumerEdge, newPowerDemand);
         this.invalidate();
@@ -191,28 +219,29 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
      */
     @Override
     public void pushDemand(FlowEdge supplierEdge, double newDemand) {
-        if (greenEnergyAvailable) {
+        if (greenEnergyAvailable) { // use the power source and charge the battery
             powerSource.handleDemand(powerSourceSupplierEdge, newDemand);
             battery.setCharging();
         } else {
-            if (battery.isEmpty()) {
+            if (battery.isEmpty()) { // when no green energy is available and the battery is empty, use the power source
                 battery.setIdle();
                 powerSource.handleDemand(powerSourceSupplierEdge, newDemand);
-            } else {
+            } else { // deplete the battery when no green energy is available
                 battery.setDepleting();
                 battery.handleDemand(batterySupplierEdge, newDemand);
+                powerSource.handleDemand(powerSourceSupplierEdge, 0); // make sure power supply is not used
             }
         }
     }
 
     @Override
     public void addSupplierEdge(FlowEdge supplierEdge) {
-        //TODO: Figure out how to handle
+        //
     }
 
     @Override
     public void removeSupplierEdge(FlowEdge supplierEdge) {
-        //TODO: Figure out how to handle
+        //
     }
 
 }
