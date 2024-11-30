@@ -43,11 +43,8 @@ import org.opendc.compute.simulator.telemetry.table.ServiceTableReaderImpl
 import org.opendc.compute.simulator.telemetry.table.TaskTableReaderImpl
 import org.opendc.simulator.compute.power.SimPowerSource
 import org.opendc.simulator.compute.power.battery.BatteryPowerAdapter
-import org.opendc.simulator.compute.power.battery.BatteryPowerAdapterLogger
 import org.opendc.simulator.compute.power.battery.PowerAdapter
 import org.opendc.simulator.compute.power.battery.SimBattery
-import org.opendc.simulator.compute.power.battery.StubPowerAdapter
-import org.opendc.simulator.compute.power.battery.greenenergy.CarbonPolicy
 import java.time.Duration
 
 /**

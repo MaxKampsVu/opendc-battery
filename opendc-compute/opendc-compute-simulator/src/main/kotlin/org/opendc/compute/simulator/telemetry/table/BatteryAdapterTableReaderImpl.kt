@@ -111,6 +111,9 @@ public class BatteryAdapterTableReaderImpl(
      */
     override fun reset() {
         previousEnergyUsage = _energyUsage
+        previousEnergyUsageBattery = _energyUsageBattery
+        previousEnergyUsagePowerSource = _energyUsagePowerSource
+
 
         _hostsConnected = 0
         _powerDraw = 0.0

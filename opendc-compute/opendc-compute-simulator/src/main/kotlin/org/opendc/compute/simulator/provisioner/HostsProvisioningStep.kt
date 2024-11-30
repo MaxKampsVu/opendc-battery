@@ -22,7 +22,6 @@
 
 package org.opendc.compute.simulator.provisioner
 
-import org.apache.commons.math3.analysis.function.Pow
 import org.opendc.compute.carbon.getCarbonFragments
 import org.opendc.compute.simulator.host.SimHost
 import org.opendc.compute.simulator.service.ComputeService
@@ -33,7 +32,6 @@ import org.opendc.simulator.compute.power.battery.PowerAdapter
 import org.opendc.simulator.compute.power.battery.BatteryPowerAdapter
 import org.opendc.simulator.compute.power.battery.SimBattery
 import org.opendc.simulator.compute.power.battery.StubPowerAdapter
-import org.opendc.simulator.compute.power.battery.greenenergy.CarbonPolicy
 import org.opendc.simulator.compute.power.battery.greenenergy.SimpleCarbonPolicy
 import org.opendc.simulator.engine.FlowEngine
 
@@ -63,14 +61,14 @@ public class HostsProvisioningStep internal constructor(
         for (cluster in clusterSpecs) {
             // Create the Power Source to which hosts are connected
 
-            val carbonFragments = getCarbonFragments("carbon_traces/carbon_2012.parquet")
+            val carbonFragments = getCarbonFragments("carbon_traces/sin_carbon_trace.parquet")
 
             val battery = true
 
             var powerAdapter: PowerAdapter
             if (battery) {
-                val max_capacity = 10000000.0 // J
-                val current = 11000.0 // W
+                val max_capacity = 600000000.0 // J
+                val current = 100000.0 // W
                 powerAdapter = BatteryPowerAdapter(
                     graph,
                     cluster.powerSource.totalPower.toDouble(),

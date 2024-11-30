@@ -17,10 +17,12 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
 
     private double combinedPowerDemand = 0.0f;
     private double combinedPowerSupplied = 0.0f;
-    private double combinedTotalEnergyUsage = 0.0f;
+    private double combinedEnergyUsage = 0.0f;
 
+    private double batteryEnergyUsage = 0.0f;
     private double batteryPowerSupplied = 0.0f;
 
+    private double powerSourceEnergyUsage = 0.0f;
     private double powerSourcePowerSupplied = 0.0f;
 
     private CarbonPolicy carbonPolicy;
@@ -29,7 +31,7 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
     private long lastUpdate;
 
     public BatteryPowerAdapter(FlowGraph graph, double max_capacity, List<CarbonFragment> carbonFragments, long startTime, CarbonPolicy carbonPolicy, SimBattery battery) {
-        //initialize powerSource in super class
+        //initialize MultiSimPowerSource in super class
         super(graph, new MultiSimPowerSource(graph, max_capacity, carbonFragments, startTime, battery));
 
         //connect battery and powerSource to each other
@@ -60,23 +62,15 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
 
     @Override
     public double getEnergyUsage() {
-        return this.combinedTotalEnergyUsage;
-    }
-
-    public double getBatteryPowerSupplied() {
-        return this.batteryPowerSupplied;
-    }
-
-    public double getPSUPowerSupplied() {
-        return this.powerSourcePowerSupplied;
+        return this.combinedEnergyUsage;
     }
 
     public double getPowerSourceEnergyUsage() {
-        return this.batteryPowerSupplied;
+        return this.powerSourceEnergyUsage;
     }
 
     public double getBatteryEnergyUsage() {
-        return this.powerSourcePowerSupplied;
+        return this.batteryEnergyUsage;
     }
 
     public SimBattery getSimBattery() {
@@ -90,11 +84,8 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
         this.closeNode();
     }
 
-    int x = 0;
-
     @Override
     public long onUpdate(long now) {
-
         //Compute if green energy is available
         double carbonIntensity = powerSource.getCarbonIntensity();
         greenEnergyAvailable = carbonPolicy.greenEnergyAvailable(carbonIntensity, now);
@@ -114,14 +105,20 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
 
         long duration = now - lastUpdate;
         if (duration > 0) {
-            double energyUsage = (this.combinedPowerSupplied * duration * 0.001);
-            this.combinedTotalEnergyUsage += energyUsage;
+            double newEnergyUsage = (this.combinedPowerSupplied * duration * 0.001);
+            this.combinedEnergyUsage += newEnergyUsage;
+
+            double newBatteryEnergyUsage  = (this.batteryPowerSupplied * duration * 0.001);
+            this.batteryEnergyUsage += newBatteryEnergyUsage;
+
+            double newPowerSourceEnergyUsage = (this.powerSourcePowerSupplied * duration * 0.001);
+            this.powerSourceEnergyUsage += newPowerSourceEnergyUsage;
         }
     }
 
     @Override
     public void updateCounters() {
-
+        updateCounters(clock.millis());
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,6 +133,7 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
     @Override
     public void handleDemand(FlowEdge consumerEdge, double newPowerDemand) {
         this.combinedPowerDemand = newPowerDemand;
+
         this.pushDemand(consumerEdge, newPowerDemand);
         this.invalidate();
     }
@@ -173,10 +171,14 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
     public void handleSupply(FlowEdge supplierEdge, double newSupply) {
         this.combinedPowerSupplied = newSupply;
 
-        if (supplierEdge.equals(batterySupplierEdge))
+        if (supplierEdge.equals(batterySupplierEdge)) {
+            powerSourcePowerSupplied = 0;
             batteryPowerSupplied = newSupply;
-        else
+        }
+        else {
+            batteryPowerSupplied = 0;
             powerSourcePowerSupplied = newSupply;
+        }
 
         this.pushSupply(muxEdge, newSupply);
         this.invalidate();
