@@ -24,7 +24,7 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
     private double totalChargeReceived = 0.0f;
 
     private final double chargeLowerBound = 0.01f; // minimum depletion
-    private final double chargeUpperBound = 0.99f; // maximum charge level
+    private final double chargeUpperBound = 0.95f; // maximum charge level
 
     enum STATE {
         CHARGING, // the battery is being charged by a SimPowerSupply
@@ -109,8 +109,20 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
         return this.state == STATE.CHARGING;
     }
 
+    public boolean isDepleting() {
+        return this.state == STATE.DEPLETING;
+    }
+
+    public boolean isIdle() {
+        return this.state == STATE.IDLE;
+    }
+
     public boolean isEmpty() {
         return chargeLevel < capacity * chargeLowerBound;
+    }
+
+    public boolean isFull() {
+        return chargeLevel > capacity * chargeUpperBound;
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructors
@@ -151,7 +163,7 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
 
         if (state == STATE.CHARGING) {
             powerSupplied = 0.0; // no power should be supplied to the adapter
-            if (chargeLevel < capacity * chargeUpperBound) {
+            if (!isFull()) {
                 this.pushDemand(this.supplierEdge, chargeCurrent);
             } else {
                 state = STATE.IDLE;
@@ -159,12 +171,19 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
         }
         else if (state == STATE.DEPLETING) {
             double powerSupply = this.powerDemand;
-
-            if (powerSupply != this.powerSupplied) {
-                this.pushSupply(this.consumerEdge, powerSupply);
+            if (!isEmpty()) {
+                if (powerSupply != this.powerSupplied) {
+                    this.pushSupply(this.consumerEdge, powerSupply);
+                }
+            } else {
+                state = STATE.IDLE;
             }
-        } else if (state == STATE.IDLE) {
+        }
 
+        if (state == STATE.IDLE) {
+            this.powerDemand = 0.0; // the battery should not demand any power
+            this.pushDemand(this.supplierEdge, 0); // make sure no charge is supplied by power source
+            powerSupplied = 0.0; // make sure the battery does not supply any power
         }
 
         return Long.MAX_VALUE;

@@ -45,7 +45,7 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
      */
     public BatteryPowerAdapter(FlowGraph graph, double max_capacity, List<CarbonFragment> carbonFragments, long startTime, CarbonPolicy carbonPolicy, SimBattery battery) {
         //initialize MultiSimPowerSource in super class
-        super(graph, new MultiSimPowerSource(graph, max_capacity, carbonFragments, startTime, battery));
+        super(graph, new MultiSimPowerSource(graph, max_capacity, carbonFragments, startTime));
 
         //connect battery and powerSource to each other
         this.battery = battery;
@@ -117,9 +117,14 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
         //Compute if green energy is available
         double carbonIntensity = powerSource.getCarbonIntensity();
         greenEnergyAvailable = carbonPolicy.greenEnergyAvailable(carbonIntensity, now);
+
+        if (greenEnergyAvailable) {
+            battery.setCharging();
+        }
+
         //Trigger supply push in powerSource and battery
-        powerSource.onUpdate(now);
         battery.onUpdate(now);
+        powerSource.onUpdate(now);
         //Update the energy supplied
         updateCounters(now);
 
@@ -221,7 +226,6 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
     public void pushDemand(FlowEdge supplierEdge, double newDemand) {
         if (greenEnergyAvailable) { // use the power source and charge the battery
             powerSource.handleDemand(powerSourceSupplierEdge, newDemand);
-            battery.setCharging();
         } else {
             if (battery.isEmpty()) { // when no green energy is available and the battery is empty, use the power source
                 battery.setIdle();

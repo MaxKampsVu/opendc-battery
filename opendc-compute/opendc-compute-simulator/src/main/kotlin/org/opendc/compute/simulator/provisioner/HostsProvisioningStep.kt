@@ -68,9 +68,9 @@ public class HostsProvisioningStep internal constructor(
             var powerAdapter: PowerAdapter
             if (use_battery) {
                 //TODO: Set the max capacity of the battery
-                val max_capacity_battery = 500000000.0 // J
+                val max_capacity_battery = 1000000000.0 // J
                 //TODO: Set the max charging current of the battery
-                val current = 11500.0 // W
+                val current = 500.0 // W
                 powerAdapter = BatteryPowerAdapter(
                     graph,
                     cluster.powerSource.totalPower.toDouble(),

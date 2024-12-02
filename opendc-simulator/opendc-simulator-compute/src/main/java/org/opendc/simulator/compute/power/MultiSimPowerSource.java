@@ -13,16 +13,13 @@ public class MultiSimPowerSource extends SimPowerSource {
     private FlowEdge batteryEdge;
     private long lastBatteryUpdate;
 
-    private SimBattery battery;
-
     private double batteryPowerDemand = 0.0f;
     private double batteryPowerSupplied = 0.0f;
     private double batteryEnergyUsage = 0.0f;
 
-    public MultiSimPowerSource(FlowGraph graph, double max_capacity, List<CarbonFragment> carbonFragments, long startTime, SimBattery battery) {
+    public MultiSimPowerSource(FlowGraph graph, double max_capacity, List<CarbonFragment> carbonFragments, long startTime) {
         super(graph, max_capacity, carbonFragments, startTime);
         lastBatteryUpdate = this.clock.millis();
-        this.battery = battery;
     }
 
     /**
@@ -83,9 +80,6 @@ public class MultiSimPowerSource extends SimPowerSource {
      */
     private void supplyBatteryEdge() {
         double batteryPowerSupply = this.batteryPowerDemand;
-        if (!battery.isCharging()) {
-            this.batteryPowerDemand = 0; //make sure battery is not being supplied with power if it is not charging
-        }
 
         if (batteryPowerSupply != this.batteryPowerSupplied) {
             this.pushSupply(batteryEdge, batteryPowerSupply);
