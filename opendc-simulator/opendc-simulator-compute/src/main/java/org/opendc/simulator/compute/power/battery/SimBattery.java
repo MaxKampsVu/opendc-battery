@@ -171,6 +171,7 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
         }
         else if (state == STATE.DEPLETING) {
             double powerSupply = this.powerDemand;
+            this.pushDemand(this.supplierEdge, 0); // make sure no charge is supplied by power source
             if (!isEmpty()) {
                 if (powerSupply != this.powerSupplied) {
                     this.pushSupply(this.consumerEdge, powerSupply);
