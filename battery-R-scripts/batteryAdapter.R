@@ -2,6 +2,7 @@
 library(arrow)   # For reading Parquet files
 library(ggplot2) # For plotting
 library(tidyr)   # For data transformation
+library(dplyr)   # For filtering data
 
 # File path for the Parquet file
 file_path <- "batteryAdapter.parquet"
@@ -12,10 +13,14 @@ data <- read_parquet(file_path)
 # Convert the timestamp column to a POSIXct format for plotting
 data$timestamp <- as.POSIXct(data$timestamp / 1000, origin = "1970-01-01", tz = "UTC")
 
+# Filter the data to include only the first month
+data_first_month <- data %>%
+  filter(format(timestamp, "%Y-%m") == format(min(timestamp), "%Y-%m"))
+
 # ----- Plot 1: Energy Usages Over Time -----
 
 # Transform the data to long format for easier plotting with ggplot
-data_long <- data %>%
+data_long <- data_first_month %>%
   pivot_longer(
     cols = c(energy_usage, energy_usage_battery, energy_usage_power_source),
     names_to = "energy_type",
@@ -52,7 +57,7 @@ energy_usage_plot <- ggplot(data_long, aes(x = timestamp, y = energy_value, colo
 # ----- Plot 2: Power Draw Over Time -----
 
 # Create the power draw plot
-power_draw_plot <- ggplot(data, aes(x = timestamp, y = power_draw)) +
+power_draw_plot <- ggplot(data_first_month, aes(x = timestamp, y = power_draw)) +
   geom_line(color = "red", size = 1) +
   labs(
     title = "Power Draw Over Time",
@@ -65,6 +70,5 @@ power_draw_plot <- ggplot(data, aes(x = timestamp, y = power_draw)) +
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
-# Print both plots
 print(energy_usage_plot)
-print(power_draw_plot)
+#print(power_draw_plot)

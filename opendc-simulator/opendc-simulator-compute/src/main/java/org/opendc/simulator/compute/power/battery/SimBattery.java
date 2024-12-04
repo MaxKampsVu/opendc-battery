@@ -23,7 +23,7 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
     private double chargeReceived = 0.0f;
     private double totalChargeReceived = 0.0f;
 
-    private final double chargeLowerBound = 0.01f; // minimum depletion
+    private final double chargeLowerBound = 0.05f; // minimum depletion
     private final double chargeUpperBound = 0.95f; // maximum charge level
 
     enum STATE {

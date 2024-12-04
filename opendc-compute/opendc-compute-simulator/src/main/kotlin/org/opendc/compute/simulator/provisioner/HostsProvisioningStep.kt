@@ -61,17 +61,25 @@ public class HostsProvisioningStep internal constructor(
         for (cluster in clusterSpecs) {
             // Create the Power Source to which hosts are connected
 
-            val carbonFragments = getCarbonFragments("carbon_traces/sin_carbon_trace.parquet")
+            val carbonFragments = getCarbonFragments("carbon_traces/carbon_2012.parquet")
 
             val use_battery = true
 
             var powerAdapter: PowerAdapter
             if (use_battery) {
-                //TODO: Set the max capacity of the battery
-                val max_capacity_battery = 1000000000.0 // J
+                //val max_capacity_battery = 10000000.0 // J to small
+                // current for to small
+                //val current = 10.0 // W // bad
+                //val current = 100.0 // W // better
+                //val current = 1000.0 // W //pretty good
 
-                //TODO: Set the max charging current of the battery
-                val current = 50.0 // W
+
+                val max_capacity_battery = 10000000.0 * 10.0 // J // pretty good
+                val current = 10000.0
+
+                //val max_capacity_battery = 10000000.0 * 100.0 // J // to large
+                //val current = 100000.0
+
                 powerAdapter = BatteryPowerAdapter(
                     graph,
                     cluster.powerSource.totalPower.toDouble(),

@@ -1,6 +1,7 @@
 # Load necessary libraries
 library(arrow)   # For reading Parquet files
 library(ggplot2) # For plotting
+library(dplyr)   # For filtering data
 
 # File path for the Parquet file
 file_path <- "powerSource.parquet"
@@ -11,8 +12,17 @@ data <- read_parquet(file_path)
 # Convert the timestamp column to a POSIXct format for plotting
 data$timestamp <- as.POSIXct(data$timestamp / 1000, origin = "1970-01-01", tz = "UTC")
 
+# Filter the data to include only the first month
+data_first_month <- data %>%
+  filter(format(timestamp, "%Y-%m") == format(min(timestamp), "%Y-%m"))
+
+# Calculate the cumulative carbon emission
+data_first_month <- data_first_month %>%
+  arrange(timestamp) %>%  # Ensure the data is sorted by timestamp
+  mutate(cumulative_carbon_emission = cumsum(carbon_emission))
+
 # Plot the energy usage data with battery usage in the foreground
-energy_usage_plot <- ggplot(data, aes(x = timestamp)) +
+energy_usage_plot <- ggplot(data_first_month, aes(x = timestamp)) +
   
   # First plot the total energy usage (background)
   geom_line(aes(y = energy_usage, color = "Total Energy Usage"), size = 0.8) +
@@ -49,10 +59,10 @@ energy_usage_plot <- ggplot(data, aes(x = timestamp)) +
   )
 
 # Print the energy usage plot
-print(energy_usage_plot)
 
 # Carbon Intensity Plot
-carbon_intensity_plot <- ggplot(data, aes(x = timestamp, y = carbon_intensity)) +
+carbon_intensity_plot <- ggplot(data_first_month, aes(x = timestamp, y = carbon_intensity)) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "blue", size = 1) +  
   geom_line(color = "red", size = 1) +  # Line for carbon intensity
   labs(
     title = "Carbon Intensity Over Time",
@@ -66,7 +76,7 @@ carbon_intensity_plot <- ggplot(data, aes(x = timestamp, y = carbon_intensity)) 
   )
 
 # Carbon Emission Plot
-carbon_emission_plot <- ggplot(data, aes(x = timestamp)) +
+carbon_emission_plot <- ggplot(data_first_month, aes(x = timestamp)) +
   geom_line(aes(y = carbon_emission), color = "red", size = 1.2) +
   labs(
     title = "Carbon Emission Over Time",
@@ -79,13 +89,17 @@ carbon_emission_plot <- ggplot(data, aes(x = timestamp)) +
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
-# Power Draw Plot
-power_draw_plot <- ggplot(data, aes(x = timestamp, y = power_draw)) +
-  geom_line(color = "blue", size = 1) +  # Line for power draw
+# Cumulative Carbon Emission Plot
+cumulative_carbon_emission_plot <- ggplot(data_first_month, aes(x = timestamp, y = cumulative_carbon_emission)) +
+  geom_line(color = "purple", size = 1.2) +  # Line for cumulative carbon emission
   labs(
-    title = "Power Draw Over Time (PowerSource)",
+    title = "Cumulative Carbon Emission Over Time",
     x = "Timestamp",
-    y = "Power Draw (Units)"
+    y = "Cumulative Carbon Emission (grams)"
+  ) +
+  scale_y_continuous(
+    limits = c(0, 150000),  # Set scale to go from 0 to 150,000
+    expand = c(0, 0)        # Prevent extra space around the plot
   ) +
   theme_minimal() +
   theme(
@@ -93,7 +107,7 @@ power_draw_plot <- ggplot(data, aes(x = timestamp, y = power_draw)) +
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
-# Print additional plots
-print(carbon_intensity_plot)
+(energy_usage_plot)
 print(carbon_emission_plot)
-print(power_draw_plot)
+print(carbon_intensity_plot)
+print(cumulative_carbon_emission_plot)
