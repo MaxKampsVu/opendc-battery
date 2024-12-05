@@ -12,17 +12,28 @@ data <- read_parquet(file_path)
 # Convert the timestamp column to a POSIXct format for plotting
 data$timestamp <- as.POSIXct(data$timestamp / 1000, origin = "1970-01-01", tz = "UTC")
 
-# Filter the data to include only the first month
-data_first_month <- data %>%
-  filter(format(timestamp, "%Y-%m") == format(min(timestamp), "%Y-%m"))
+# Toggle to choose between first month, first year, or entire dataset
+use_first_month <- TRUE
+use_first_year <- FALSE
+
+# Apply filtering logic based on the toggles
+filtered_data <- if (use_first_month) {
+  data %>%
+    filter(format(timestamp, "%Y-%m") == format(min(timestamp), "%Y-%m"))
+} else if (use_first_year) {
+  data %>%
+    filter(format(timestamp, "%Y") == format(min(timestamp), "%Y"))
+} else {
+  data
+}
 
 # Calculate the cumulative carbon emission
-data_first_month <- data_first_month %>%
+filtered_data <- filtered_data %>%
   arrange(timestamp) %>%  # Ensure the data is sorted by timestamp
   mutate(cumulative_carbon_emission = cumsum(carbon_emission))
 
 # Plot the energy usage data with battery usage in the foreground
-energy_usage_plot <- ggplot(data_first_month, aes(x = timestamp)) +
+energy_usage_plot <- ggplot(filtered_data, aes(x = timestamp)) +
   
   # First plot the total energy usage (background)
   geom_line(aes(y = energy_usage, color = "Total Energy Usage"), size = 0.8) +
@@ -45,7 +56,7 @@ energy_usage_plot <- ggplot(data_first_month, aes(x = timestamp)) +
   
   # Add plot labels
   labs(
-    title = "Energy Usage: Total, Battery, and Adapter",
+    title = if (use_first_month) "Energy Usage (First Month)" else if (use_first_year) "Energy Usage (First Year)" else "Energy Usage (Entire Duration)",
     x = "Timestamp",
     y = "Energy Usage (Watts)"
   ) +
@@ -58,14 +69,12 @@ energy_usage_plot <- ggplot(data_first_month, aes(x = timestamp)) +
     plot.title = element_text(hjust = 0.5)
   )
 
-# Print the energy usage plot
-
 # Carbon Intensity Plot
-carbon_intensity_plot <- ggplot(data_first_month, aes(x = timestamp, y = carbon_intensity)) +
+carbon_intensity_plot <- ggplot(filtered_data, aes(x = timestamp, y = carbon_intensity)) +
   geom_hline(yintercept = 100, linetype = "dashed", color = "blue", size = 1) +  
   geom_line(color = "red", size = 1) +  # Line for carbon intensity
   labs(
-    title = "Carbon Intensity Over Time",
+    title = if (use_first_month) "Carbon Intensity (First Month)" else if (use_first_year) "Carbon Intensity (First Year)" else "Carbon Intensity (Entire Duration)",
     x = "Timestamp",
     y = "Carbon Intensity (Units)"
   ) +
@@ -75,30 +84,16 @@ carbon_intensity_plot <- ggplot(data_first_month, aes(x = timestamp, y = carbon_
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
-# Carbon Emission Plot
-carbon_emission_plot <- ggplot(data_first_month, aes(x = timestamp)) +
-  geom_line(aes(y = carbon_emission), color = "red", size = 1.2) +
-  labs(
-    title = "Carbon Emission Over Time",
-    x = "Timestamp",
-    y = "Carbon Emission (grams)"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0.5),
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  )
-
 # Cumulative Carbon Emission Plot
-cumulative_carbon_emission_plot <- ggplot(data_first_month, aes(x = timestamp, y = cumulative_carbon_emission)) +
+cumulative_carbon_emission_plot <- ggplot(filtered_data, aes(x = timestamp, y = cumulative_carbon_emission)) +
   geom_line(color = "purple", size = 1.2) +  # Line for cumulative carbon emission
   labs(
-    title = "Cumulative Carbon Emission Over Time",
+    title = if (use_first_month) "Cumulative Carbon Emission (First Month)" else if (use_first_year) "Cumulative Carbon Emission (First Year)" else "Cumulative Carbon Emission (Entire Duration)",
     x = "Timestamp",
     y = "Cumulative Carbon Emission (grams)"
   ) +
   scale_y_continuous(
-    limits = c(0, 150000),  # Set scale to go from 0 to 150,000
+    limits = c(0, max(filtered_data$cumulative_carbon_emission, na.rm = TRUE) * 1.1),  # Set scale dynamically
     expand = c(0, 0)        # Prevent extra space around the plot
   ) +
   theme_minimal() +
@@ -107,7 +102,7 @@ cumulative_carbon_emission_plot <- ggplot(data_first_month, aes(x = timestamp, y
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
-(energy_usage_plot)
-print(carbon_emission_plot)
+# Print the plots
+print(energy_usage_plot)
 print(carbon_intensity_plot)
 print(cumulative_carbon_emission_plot)

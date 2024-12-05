@@ -13,14 +13,25 @@ data <- read_parquet(file_path)
 # Convert the timestamp column to a POSIXct format for plotting
 data$timestamp <- as.POSIXct(data$timestamp / 1000, origin = "1970-01-01", tz = "UTC")
 
-# Filter the data to include only the first month
-data_first_month <- data %>%
-  filter(format(timestamp, "%Y-%m") == format(min(timestamp), "%Y-%m"))
+# Toggle for switching between first month, first year, or entire dataset
+use_first_month <- TRUE
+use_first_year <- FALSE
+
+# Apply filtering logic based on the toggles
+filtered_data <- if (use_first_month) {
+  data %>%
+    filter(format(timestamp, "%Y-%m") == format(min(timestamp), "%Y-%m"))
+} else if (use_first_year) {
+  data %>%
+    filter(format(timestamp, "%Y") == format(min(timestamp), "%Y"))
+} else {
+  data
+}
 
 # ----- Plot 1: Energy Usages Over Time -----
 
 # Transform the data to long format for easier plotting with ggplot
-data_long <- data_first_month %>%
+data_long <- filtered_data %>%
   pivot_longer(
     cols = c(energy_usage, energy_usage_battery, energy_usage_power_source),
     names_to = "energy_type",
@@ -43,7 +54,7 @@ energy_usage_plot <- ggplot(data_long, aes(x = timestamp, y = energy_value, colo
     )
   ) +
   labs(
-    title = "Energy Usages Over Time",
+    title = if (use_first_month) "Energy Usages (First Month)" else if (use_first_year) "Energy Usages (First Year)" else "Energy Usages (Entire Duration)",
     x = "Timestamp",
     y = "Energy Usage (Units)",
     color = "Energy Type"
@@ -57,10 +68,10 @@ energy_usage_plot <- ggplot(data_long, aes(x = timestamp, y = energy_value, colo
 # ----- Plot 2: Power Draw Over Time -----
 
 # Create the power draw plot
-power_draw_plot <- ggplot(data_first_month, aes(x = timestamp, y = power_draw)) +
+power_draw_plot <- ggplot(filtered_data, aes(x = timestamp, y = power_draw)) +
   geom_line(color = "red", size = 1) +
   labs(
-    title = "Power Draw Over Time",
+    title = if (use_first_month) "Power Draw (First Month)" else if (use_first_year) "Power Draw (First Year)" else "Power Draw (Entire Duration)",
     x = "Timestamp",
     y = "Power Draw (Units)"
   ) +
@@ -70,5 +81,6 @@ power_draw_plot <- ggplot(data_first_month, aes(x = timestamp, y = power_draw)) 
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
+# Print the plots
 print(energy_usage_plot)
-#print(power_draw_plot)
+print(power_draw_plot)

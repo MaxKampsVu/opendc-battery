@@ -1,0 +1,317 @@
+{
+    "name": "simple",
+    "topologies": [
+        {
+            "pathToFile": "topologies/experiment_topology.json"
+        }
+    ],
+    "workloads": [
+        {
+            "pathToFile": "workload_traces/bitbrains-small",
+            "type": "ComputeWorkload"
+        }
+
+    ],
+    "exportModels": [
+        {
+            "exportInterval": 30000
+        },
+        {
+            "exportInterval": 30001
+        },
+        {
+            "exportInterval": 30002
+        },
+        {
+            "exportInterval": 30003
+        },
+        {
+            "exportInterval": 30004
+        },
+        {
+            "exportInterval": 30005
+        },
+        {
+            "exportInterval": 30006
+        },
+        {
+            "exportInterval": 30007
+        },
+        {
+            "exportInterval": 30008
+        },
+        {
+            "exportInterval": 30009
+        },
+        {
+            "exportInterval": 30010
+        },
+        {
+            "exportInterval": 30011
+        },
+        {
+            "exportInterval": 30012
+        },
+        {
+            "exportInterval": 30013
+        },
+        {
+            "exportInterval": 30014
+        },
+        {
+            "exportInterval": 30015
+        },
+        {
+            "exportInterval": 30016
+        },
+        {
+            "exportInterval": 30017
+        },
+        {
+            "exportInterval": 30018
+        },
+        {
+            "exportInterval": 30019
+        },
+        {
+            "exportInterval": 30020
+        },
+        {
+            "exportInterval": 30021
+        },
+        {
+            "exportInterval": 30022
+        },
+        {
+            "exportInterval": 30023
+        },
+        {
+            "exportInterval": 30024
+        },
+        {
+            "exportInterval": 30025
+        },
+        {
+            "exportInterval": 30026
+        },
+        {
+            "exportInterval": 30027
+        },
+        {
+            "exportInterval": 30028
+        },
+        {
+            "exportInterval": 30029
+        },
+        {
+            "exportInterval": 30030
+        },
+        {
+            "exportInterval": 30031
+        },
+        {
+            "exportInterval": 30032
+        },
+        {
+            "exportInterval": 30033
+        },
+        {
+            "exportInterval": 30034
+        },
+        {
+            "exportInterval": 30035
+        },
+        {
+            "exportInterval": 30036
+        },
+        {
+            "exportInterval": 30037
+        },
+        {
+            "exportInterval": 30038
+        },
+        {
+            "exportInterval": 30039
+        },
+        {
+            "exportInterval": 30040
+        },
+        {
+            "exportInterval": 30041
+        },
+        {
+            "exportInterval": 30042
+        },
+        {
+            "exportInterval": 30043
+        },
+        {
+            "exportInterval": 30044
+        },
+        {
+            "exportInterval": 30045
+        },
+        {
+            "exportInterval": 30046
+        },
+        {
+            "exportInterval": 30047
+        },
+        {
+            "exportInterval": 30048
+        },
+        {
+            "exportInterval": 30049
+        },
+        {
+            "exportInterval": 30050
+        },
+        {
+            "exportInterval": 30051
+        },
+        {
+            "exportInterval": 30052
+        },
+        {
+            "exportInterval": 30053
+        },
+        {
+            "exportInterval": 30054
+        },
+        {
+            "exportInterval": 30055
+        },
+        {
+            "exportInterval": 30056
+        },
+        {
+            "exportInterval": 30057
+        },
+        {
+            "exportInterval": 30058
+        },
+        {
+            "exportInterval": 30059
+        },
+        {
+            "exportInterval": 30060
+        },
+        {
+            "exportInterval": 30061
+        },
+        {
+            "exportInterval": 30062
+        },
+        {
+            "exportInterval": 30063
+        },
+        {
+            "exportInterval": 30064
+        },
+        {
+            "exportInterval": 30065
+        },
+        {
+            "exportInterval": 30066
+        },
+        {
+            "exportInterval": 30067
+        },
+        {
+            "exportInterval": 30068
+        },
+        {
+            "exportInterval": 30069
+        },
+        {
+            "exportInterval": 30070
+        },
+        {
+            "exportInterval": 30071
+        },
+        {
+            "exportInterval": 30072
+        },
+        {
+            "exportInterval": 30073
+        },
+        {
+            "exportInterval": 30074
+        },
+        {
+            "exportInterval": 30075
+        },
+        {
+            "exportInterval": 30076
+        },
+        {
+            "exportInterval": 30077
+        },
+        {
+            "exportInterval": 30078
+        },
+        {
+            "exportInterval": 30079
+        },
+        {
+            "exportInterval": 30080
+        },
+        {
+            "exportInterval": 30081
+        },
+        {
+            "exportInterval": 30082
+        },
+        {
+            "exportInterval": 30083
+        },
+        {
+            "exportInterval": 30084
+        },
+        {
+            "exportInterval": 30085
+        },
+        {
+            "exportInterval": 30086
+        },
+        {
+            "exportInterval": 30087
+        },
+        {
+            "exportInterval": 30088
+        },
+        {
+            "exportInterval": 30089
+        },
+        {
+            "exportInterval": 30090
+        },
+        {
+            "exportInterval": 30091
+        },
+        {
+            "exportInterval": 30092
+        },
+        {
+            "exportInterval": 30093
+        },
+        {
+            "exportInterval": 30094
+        },
+        {
+            "exportInterval": 30095
+        },
+        {
+            "exportInterval": 30096
+        },
+        {
+            "exportInterval": 30097
+        },
+        {
+            "exportInterval": 30098
+        },
+        {
+            "exportInterval": 30099
+        }
+    ]
+}

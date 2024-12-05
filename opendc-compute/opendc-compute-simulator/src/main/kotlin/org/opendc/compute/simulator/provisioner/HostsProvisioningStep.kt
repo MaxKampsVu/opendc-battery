@@ -42,10 +42,14 @@ import org.opendc.simulator.engine.FlowEngine
  * @param specs A list of [HostSpec] objects describing the simulated hosts to provision.
  * @param optimize A flag to indicate that the CPU resources of the host should be merged into a single CPU resource.
  */
+
+
+
 public class HostsProvisioningStep internal constructor(
     private val serviceDomain: String,
     private val clusterSpecs: List<ClusterSpec>,
     private val startTime: Long = 0L,
+
 ) : ProvisioningStep {
     override fun apply(ctx: ProvisioningContext): AutoCloseable {
         val service =
@@ -61,21 +65,24 @@ public class HostsProvisioningStep internal constructor(
         for (cluster in clusterSpecs) {
             // Create the Power Source to which hosts are connected
 
-            val carbonFragments = getCarbonFragments("carbon_traces/carbon_2012.parquet")
+            val carbonFragments = getCarbonFragments("carbon_traces/day_sin_carbon_trace.parquet")
 
             val use_battery = true
 
             var powerAdapter: PowerAdapter
             if (use_battery) {
-                //val max_capacity_battery = 10000000.0 // J to small
+                val max_capacity_battery = 10000000.0 // J to small
+                val current = 200.0
+
+
                 // current for to small
                 //val current = 10.0 // W // bad
                 //val current = 100.0 // W // better
                 //val current = 1000.0 // W //pretty good
+                //val current = 100.0
 
-
-                val max_capacity_battery = 10000000.0 * 10.0 // J // pretty good
-                val current = 10000.0
+                //val max_capacity_battery = 10000000.0 * 10.0 // J // pretty good
+                //val current = 10000.0
 
                 //val max_capacity_battery = 10000000.0 * 100.0 // J // to large
                 //val current = 100000.0

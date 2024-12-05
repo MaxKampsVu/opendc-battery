@@ -7,7 +7,7 @@
     ],
     "workloads": [
         {
-            "pathToFile": "workload_traces/bitbrains-small",
+            "pathToFile": "workload_traces/correctness",
             "type": "ComputeWorkload"
         }
     ],

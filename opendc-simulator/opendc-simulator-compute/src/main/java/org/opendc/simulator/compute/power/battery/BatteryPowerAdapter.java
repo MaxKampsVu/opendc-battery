@@ -32,6 +32,7 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
     private final CarbonPolicy carbonPolicy;
     private boolean greenEnergyAvailable = false;
 
+
     private long lastUpdate;
 
     /**
@@ -46,7 +47,6 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
     public BatteryPowerAdapter(FlowGraph graph, double max_capacity, List<CarbonFragment> carbonFragments, long startTime, CarbonPolicy carbonPolicy, SimBattery battery) {
         //initialize MultiSimPowerSource in super class
         super(graph, new MultiSimPowerSource(graph, max_capacity, carbonFragments, startTime));
-
         //connect battery and powerSource to each other
         this.battery = battery;
         batterySupplierEdge = new FlowEdge(battery, powerSource);

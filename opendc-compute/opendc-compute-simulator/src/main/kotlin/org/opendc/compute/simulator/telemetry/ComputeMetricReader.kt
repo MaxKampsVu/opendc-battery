@@ -102,20 +102,37 @@ public class ComputeMetricReader(
     /**
      * The background job that is responsible for collecting the metrics every cycle.
      */
+
+    private val batteryCapacityCarbonFilePath = "battery-report-experiment-files/capacityCarbon.csv"
+
     private val job =
         scope.launch {
             val intervalMs = exportInterval.toMillis()
-            try {
-                while (isActive) {
-                    delay(intervalMs)
+                try {
+                    while (isActive) {
+                        delay(intervalMs)
 
-                    loggState()
+                        loggState()
+                    }
+                } finally {
+                    /*
+                    // write carbon emissions for specific battery to file
+                    val batterySize = batteryTableReaders.iterator().next().key.capacity
+                    val totalCarbon = powerSourceTableReaders.iterator().next().key.carbonEmission
+
+
+                    try {
+                        val file = java.io.File(batteryCapacityCarbonFilePath)
+                        file.appendText("$batterySize, $totalCarbon\n")
+                    } catch (e: java.io.IOException) {
+                        println("Error writing to file: ${e.message}")
+                    }
+                     */
+
+                    if (monitor is AutoCloseable) {
+                        monitor.close()
+                    }
                 }
-            } finally {
-                if (monitor is AutoCloseable) {
-                    monitor.close()
-                }
-            }
         }
 
 
@@ -204,7 +221,7 @@ public class ComputeMetricReader(
                 loggString += "\t\t\t\t\t\tTasks Completed: ${this.serviceTableReader.tasksCompleted}\n"
                 loggString += "\t\t\t\t\t\tTasks Terminated: ${this.serviceTableReader.tasksTerminated}\n"
 
-                this.logger.warn { loggString }
+                //this.logger.warn { loggString }
                 loggCounter = 0
             }
         } catch (cause: Throwable) {
