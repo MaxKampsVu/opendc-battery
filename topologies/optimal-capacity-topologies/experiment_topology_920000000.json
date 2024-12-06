@@ -1,0 +1,94 @@
+{
+    "clusters": [
+        {
+            "name": "C01",
+            "battery": {
+                "capacity": 920000000,
+                "chargeSpeed": 5000.0,
+                "carbonThreshold": 100.0
+            },
+            "hosts": [
+                {
+                    "name": "H01",
+                    "cpu": {
+                        "coreCount": 12,
+                        "coreSpeed": 3300
+                    },
+                    "memory": {
+                        "memorySize": 140457600000
+                    }
+                },
+                {
+                    "name": "H02",
+                    "cpu": {
+                        "coreCount": 12,
+                        "coreSpeed": 3300
+                    },
+                    "memory": {
+                        "memorySize": 140457600000
+                    }
+                },
+                {
+                    "name": "H03",
+                    "cpu": {
+                        "coreCount": 12,
+                        "coreSpeed": 3300
+                    },
+                    "memory": {
+                        "memorySize": 140457600000
+                    }
+                },
+                {
+                    "name": "H04",
+                    "cpu": {
+                        "coreCount": 12,
+                        "coreSpeed": 3300
+                    },
+                    "memory": {
+                        "memorySize": 140457600000
+                    }
+                },
+                {
+                    "name": "H05",
+                    "cpu": {
+                        "coreCount": 12,
+                        "coreSpeed": 3300
+                    },
+                    "memory": {
+                        "memorySize": 140457600000
+                    }
+                },
+                {
+                    "name": "H06",
+                    "cpu": {
+                        "coreCount": 12,
+                        "coreSpeed": 3300
+                    },
+                    "memory": {
+                        "memorySize": 140457600000
+                    }
+                },
+                {
+                    "name": "H07",
+                    "cpu": {
+                        "coreCount": 12,
+                        "coreSpeed": 3300
+                    },
+                    "memory": {
+                        "memorySize": 140457600000
+                    }
+                },
+                {
+                    "name": "H08",
+                    "cpu": {
+                        "coreCount": 12,
+                        "coreSpeed": 3300
+                    },
+                    "memory": {
+                        "memorySize": 140457600000
+                    }
+                }
+            ]
+        }
+    ]
+}
