@@ -32,16 +32,16 @@ filtered_data <- filtered_data %>%
   arrange(timestamp) %>%  # Ensure the data is sorted by timestamp
   mutate(cumulative_carbon_emission = cumsum(carbon_emission))
 
-# Plot the energy usage data with battery usage in the foreground
+# Energy Usage Plot
 energy_usage_plot <- ggplot(filtered_data, aes(x = timestamp)) +
   
-  # First plot the total energy usage (background)
+  # Total energy usage (background)
   geom_line(aes(y = energy_usage, color = "Total Energy Usage"), size = 0.8) +
   
-  # Plot the adapter usage (middle layer)
+  # Adapter usage (middle layer)
   geom_line(aes(y = energy_usage_adapter, color = "Adapter Usage"), size = 0.8) +
   
-  # Plot the battery usage (foreground)
+  # Battery usage (foreground)
   geom_line(aes(y = energy_usage_battery, color = "Battery Usage"), size = 1.2) +
   
   # Customize the legend colors
@@ -102,7 +102,24 @@ cumulative_carbon_emission_plot <- ggplot(filtered_data, aes(x = timestamp, y = 
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
+# Power Draw Plot
+power_draw_plot <- ggplot(filtered_data, aes(x = timestamp, y = power_draw)) +
+  geom_line(color = "darkred", size = 1) +
+  labs(
+    title = if (use_first_month) "Power Draw (First Month)" else if (use_first_year) "Power Draw (First Year)" else "Power Draw (Entire Duration)",
+    x = "Timestamp",
+    y = "Power Draw (Watts)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+
+
 # Print the plots
 print(energy_usage_plot)
 print(carbon_intensity_plot)
 print(cumulative_carbon_emission_plot)
+print(power_draw_plot)

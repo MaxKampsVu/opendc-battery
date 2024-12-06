@@ -26,9 +26,6 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
     private final double chargeLowerBound = 0.05f; // minimum depletion
     private final double chargeUpperBound = 0.95f; // maximum charge level
 
-    private static int ctr = 0;
-    private double batteryCapacityStep = 10000000.0;
-
     enum STATE {
         CHARGING, // the battery is being charged by a SimPowerSupply
         IDLE, // do nothing
@@ -140,8 +137,7 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
     public SimBattery(FlowGraph graph, double max_capacity, double charge_current) {
         super(graph);
 
-        this.capacity = max_capacity + (ctr * batteryCapacityStep);
-        ctr++;
+        this.capacity = max_capacity;
         this.chargeCurrent = charge_current;
 
         this.state = STATE.CHARGING;

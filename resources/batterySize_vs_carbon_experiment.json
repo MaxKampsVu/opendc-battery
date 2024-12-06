@@ -1,0 +1,319 @@
+{
+    "name": "find the optimal battery size",
+    "topologies": [
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_no_battery.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_10000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_20000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_30000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_40000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_50000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_60000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_70000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_80000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_90000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_100000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_110000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_120000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_130000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_140000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_150000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_160000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_170000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_180000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_190000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_200000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_210000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_220000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_230000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_240000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_250000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_260000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_270000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_280000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_290000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_300000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_310000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_320000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_330000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_340000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_350000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_360000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_370000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_380000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_390000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_400000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_410000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_420000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_430000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_440000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_450000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_460000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_470000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_480000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_490000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_500000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_510000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_520000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_530000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_540000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_550000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_560000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_570000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_580000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_590000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_600000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_610000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_620000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_630000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_640000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_650000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_660000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_670000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_680000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_690000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_700000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_710000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_720000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_730000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_740000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_750000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_760000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_770000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_780000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_790000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_800000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_810000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_820000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_830000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_840000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_850000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_860000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_870000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_880000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_890000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_900000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_910000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_920000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_930000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_940000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_950000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_960000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_970000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_980000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_990000000.json"
+        },
+        {
+            "pathToFile": "/Users/maximiliankamps/IdeaProjects/opendcgreenbattery/topologies/optimal-capacity-topologies/experiment_topology_1000000000.json"
+        }
+    ],
+    "workloads": [
+        {
+            "pathToFile": "workload_traces/bitbrains-small",
+            "type": "ComputeWorkload"
+        }
+    ],
+    "exportModels": [
+        {
+            "exportInterval": 30000
+        }
+    ]
+}

@@ -24,12 +24,7 @@
 
 package org.opendc.compute.topology
 
-import org.opendc.compute.topology.specs.ClusterJSONSpec
-import org.opendc.compute.topology.specs.ClusterSpec
-import org.opendc.compute.topology.specs.HostJSONSpec
-import org.opendc.compute.topology.specs.HostSpec
-import org.opendc.compute.topology.specs.PowerSourceSpec
-import org.opendc.compute.topology.specs.TopologySpec
+import org.opendc.compute.topology.specs.*
 import org.opendc.simulator.compute.cpu.getPowerModel
 import org.opendc.simulator.compute.models.CpuModel
 import org.opendc.simulator.compute.models.MachineModel
@@ -78,7 +73,7 @@ public fun clusterTopology(
 }
 
 /**
- * Helper method to convert a [TopologySpec] into a list of [HostSpec]s.
+ * Helper method to convert a [TopologySpec] into a list of [ClusterSpec]s.
  */
 private fun TopologySpec.toClusterSpec(random: RandomGenerator): List<ClusterSpec> {
     return clusters.map { cluster ->
@@ -87,7 +82,7 @@ private fun TopologySpec.toClusterSpec(random: RandomGenerator): List<ClusterSpe
 }
 
 /**
- * Helper method to convert a [ClusterJSONSpec] into a list of [HostSpec]s.
+ * Helper method to convert a [ClusterJSONSpec] into a [ClusterSpec].
  */
 private var clusterId = 0
 
@@ -101,20 +96,32 @@ private fun ClusterJSONSpec.toClusterSpec(random: RandomGenerator): ClusterSpec 
                         random,
                     )
                 }
-            )
+                )
         }
+
     val powerSourceSpec =
         PowerSourceSpec(
-            UUID(random.nextLong(), (clusterId).toLong()),
+            UUID(random.nextLong(), clusterId.toLong()),
             totalPower = this.powerSource.totalPower,
             carbonTracePath = this.powerSource.carbonTracePath,
         )
+
+    // Parse battery specification if present
+    val batterySpec = battery?.let {
+        BatterySpec(
+            uid = UUID(random.nextLong(), clusterId.toLong()),
+            capacity = it.capacity,
+            chargeSpeed = it.chargeSpeed,
+            carbonThreshold = it.carbonThreshold,
+        )
+    }
+
     clusterId++
-    return ClusterSpec(this.name, hostSpecs, powerSourceSpec)
+    return ClusterSpec(this.name, hostSpecs, powerSourceSpec, batterySpec)
 }
 
 /**
- * Helper method to convert a [HostJSONSpec] into a [HostSpec]s.
+ * Helper method to convert a [HostJSONSpec] into a [HostSpec].
  */
 private var hostId = 0
 private var globalCoreId = 0
@@ -142,16 +149,11 @@ private fun HostJSONSpec.toHostSpec(
     val powerModel =
         getPowerModel(powerModel.modelType, powerModel.power.toWatts(), powerModel.maxPower.toWatts(), powerModel.idlePower.toWatts())
 
-    var hostName: String
-    if (name == null) {
-        hostName = "Host-$hostId"
-    } else {
-        hostName = name
-    }
+    val hostName = name ?: "Host-$hostId"
 
     val hostSpec =
         HostSpec(
-            UUID(random.nextLong(), (hostId).toLong()),
+            UUID(random.nextLong(), hostId.toLong()),
             hostName,
             mapOf("cluster" to clusterId),
             machineModel,

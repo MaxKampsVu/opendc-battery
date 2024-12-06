@@ -1,8 +1,8 @@
 {
-    "name": "simple",
+    "name": "simulate the optimal battery from experiment batterySize_vs_carbon_experiment.json",
     "topologies": [
         {
-            "pathToFile": "topologies/small_topology.json"
+            "pathToFile": "topologies/optimal_battery_topology.json"
         }
     ],
     "workloads": [
@@ -13,7 +13,7 @@
     ],
     "exportModels": [
         {
-            "exportInterval": 30000
+            "exportInterval": 3000
         }
     ]
 }

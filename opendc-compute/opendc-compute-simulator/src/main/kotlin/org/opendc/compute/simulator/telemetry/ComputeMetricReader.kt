@@ -116,18 +116,29 @@ public class ComputeMetricReader(
                     }
                 } finally {
                     /*
-                    // write carbon emissions for specific battery to file
-                    val batterySize = batteryTableReaders.iterator().next().key.capacity
-                    val totalCarbon = powerSourceTableReaders.iterator().next().key.carbonEmission
+                    // write to capacityCarbon.csv to find optimal capacity
 
-
-                    try {
+                    if (batteryTableReaders.isEmpty()) {
                         val file = java.io.File(batteryCapacityCarbonFilePath)
+                        val batterySize = 0
+                        val totalCarbon = powerSourceTableReaders.iterator().next().key.carbonEmission
                         file.appendText("$batterySize, $totalCarbon\n")
-                    } catch (e: java.io.IOException) {
-                        println("Error writing to file: ${e.message}")
                     }
-                     */
+                    else {
+
+                        val batterySize = batteryTableReaders.iterator().next().key.capacity
+                        val totalCarbon = powerSourceTableReaders.iterator().next().key.carbonEmission
+
+
+                        try {
+                            val file = java.io.File(batteryCapacityCarbonFilePath)
+                            file.appendText("$batterySize, $totalCarbon\n")
+                        } catch (e: java.io.IOException) {
+                            println("Error writing to file: ${e.message}")
+                        }
+                    }
+                    */
+
 
                     if (monitor is AutoCloseable) {
                         monitor.close()

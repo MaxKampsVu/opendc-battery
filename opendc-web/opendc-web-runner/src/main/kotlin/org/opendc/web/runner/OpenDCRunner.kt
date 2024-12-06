@@ -269,7 +269,7 @@ public class OpenDCRunner(
                         UUID(0, 0),
                         totalPower = Long.MAX_VALUE,
                     )
-                val topology = listOf(ClusterSpec("cluster", topologyHosts, powerSourceSpec))
+                val topology = listOf(ClusterSpec("cluster", topologyHosts, powerSourceSpec, batterySpec))
 
                 Provisioner(dispatcher, seed).use { provisioner ->
 

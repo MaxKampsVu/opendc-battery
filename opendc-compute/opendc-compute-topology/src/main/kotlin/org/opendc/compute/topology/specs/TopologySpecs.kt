@@ -50,8 +50,16 @@ public data class ClusterJSONSpec(
     val name: String = "Cluster",
     val count: Int = 1,
     val hosts: List<HostJSONSpec>,
+    val battery: Battery? = null,
     val powerSource: PowerSourceJSONSpec = PowerSourceJSONSpec.DFLT,
     val location: String = "NL",
+)
+
+@Serializable
+public data class Battery(
+    val capacity: Double,
+    val chargeSpeed: Double,
+    val carbonThreshold: Double
 )
 
 /**

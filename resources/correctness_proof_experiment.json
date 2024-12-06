@@ -1,13 +1,13 @@
 {
-    "name": "simple",
+    "name": "correctness proof of batteries",
     "topologies": [
         {
-            "pathToFile": "topologies/small_topology.json"
+            "pathToFile": "topologies/correctness_proof_topology.json"
         }
     ],
     "workloads": [
         {
-            "pathToFile": "workload_traces/correctness",
+            "pathToFile": "workload_traces/bitbrains-small",
             "type": "ComputeWorkload"
         }
     ],
