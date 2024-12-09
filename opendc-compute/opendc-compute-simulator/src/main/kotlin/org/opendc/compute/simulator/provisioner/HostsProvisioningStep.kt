@@ -64,13 +64,13 @@ public class HostsProvisioningStep internal constructor(
 
         for (cluster in clusterSpecs) {
 
-            val carbonFragments = getCarbonFragments("carbon_traces/correctness_carbon_trace.parquet")
+            val carbonFragments = getCarbonFragments("carbon_traces/sin_carbon_trace.parquet")
 
             val use_battery = cluster.batterySpec?.capacity != null
 
             var powerAdapter: PowerAdapter
             if (use_battery) {
-                val max_capacity_battery = cluster.batterySpec!!.capacity // J to small
+                val max_capacity_battery = cluster.batterySpec!!.capacity
                 val current = cluster.batterySpec!!.chargeSpeed
                 val carbonIntensityThreshold = cluster.batterySpec!!.carbonThreshold
 
