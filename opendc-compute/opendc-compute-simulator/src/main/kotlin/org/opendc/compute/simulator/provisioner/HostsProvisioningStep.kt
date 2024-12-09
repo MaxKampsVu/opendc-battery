@@ -64,7 +64,7 @@ public class HostsProvisioningStep internal constructor(
 
         for (cluster in clusterSpecs) {
 
-            val carbonFragments = getCarbonFragments("carbon_traces/sin_carbon_trace.parquet")
+            val carbonFragments = getCarbonFragments("carbon_traces/correctness_carbon_trace.parquet")
 
             val use_battery = cluster.batterySpec?.capacity != null
 

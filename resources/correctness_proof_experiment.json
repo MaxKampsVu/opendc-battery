@@ -2,7 +2,10 @@
     "name": "correctness proof of batteries",
     "topologies": [
         {
-            "pathToFile": "topologies/correctness_proof_topology.json"
+            "pathToFile": "topologies/correctness_proof_topology_battery.json"
+        },
+        {
+            "pathToFile": "topologies/correctness_proof_topology_no_battery.json"
         }
     ],
     "workloads": [

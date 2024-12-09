@@ -14,8 +14,8 @@ data <- read_parquet(file_path)
 data$timestamp <- as.POSIXct(data$timestamp / 1000, origin = "1970-01-01", tz = "UTC")
 
 # Toggle for switching between first month, first year, or entire dataset
-use_first_month <- FALSE
-use_first_year <- TRUE
+use_first_month <- TRUE
+use_first_year <- FALSE
 
 
 # Apply filtering logic based on the toggles
