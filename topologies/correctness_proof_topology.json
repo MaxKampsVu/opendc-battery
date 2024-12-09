@@ -4,9 +4,9 @@
         {
             "name": "C01",
             "battery": {
-                    "capacity": 10000000.0,
-                "chargeSpeed": 5000.0,
-                "carbonThreshold": 100.0
+                "capacity": 20000000.0,
+                "chargeSpeed": 500.0,
+                "carbonThreshold": 125.0
             },
             "hosts" :
             [
