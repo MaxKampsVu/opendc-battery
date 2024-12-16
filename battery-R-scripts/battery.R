@@ -10,7 +10,7 @@
   battery_data$timestamp <- as.POSIXct(battery_data$timestamp / 1000, origin = "1970-01-01", tz = "UTC")
   
   # Toggle for switching between first month and entire dataset
-  use_first_month <- TRUE
+  use_first_month <- FALSE
   
   # Apply filtering logic based on the toggle
   filtered_battery_data <- if (use_first_month) {

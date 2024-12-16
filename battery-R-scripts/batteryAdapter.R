@@ -1,64 +1,48 @@
 # Load necessary libraries
-library(arrow)   # For reading Parquet files
-library(ggplot2) # For plotting
-library(tidyr)   # For data transformation
-library(dplyr)   # For filtering data
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(arrow)
 
-# File path for the Parquet file
-file_path <- "batteryAdapter.parquet"
+# Load the Parquet file
+battery_adapter_data <- read_parquet("batteryAdapter.parquet")
 
-# Read the Parquet file
-data <- read_parquet(file_path)
+# Convert `timestamp` to POSIXct (milliseconds to seconds)
+battery_adapter_data <- battery_adapter_data %>%
+  mutate(timestamp = as.POSIXct(timestamp / 1000, origin = "1970-01-01", tz = "UTC"))
 
-# Convert the timestamp column to a POSIXct format for plotting
-data$timestamp <- as.POSIXct(data$timestamp / 1000, origin = "1970-01-01", tz = "UTC")
-
-# Toggle for switching between first month, first year, or entire dataset
-use_first_month <- TRUE
-use_first_year <- FALSE
-
-
-# Apply filtering logic based on the toggles
-filtered_data <- if (use_first_month) {
-  data %>%
-    filter(format(timestamp, "%Y-%m") == format(min(timestamp), "%Y-%m"))
-} else if (use_first_year) {
-  data %>%
-    filter(format(timestamp, "%Y") == format(min(timestamp), "%Y"))
-} else {
-  data
-}
-
-# ----- Plot 1: Energy Usages Over Time -----
+# Convert the timestamp to days since the start of the dataset
+battery_adapter_data <- battery_adapter_data %>%
+  mutate(timestamp_days = as.numeric(difftime(timestamp, min(timestamp), units = "days")))
 
 # Transform the data to long format for easier plotting with ggplot
-data_long <- filtered_data %>%
+data_long <- battery_adapter_data %>%
   pivot_longer(
-    cols = c(energy_usage, energy_usage_battery, energy_usage_power_source),
+    cols = c(energy_usage, energy_usage_battery, energy_usage_adapter),
     names_to = "energy_type",
     values_to = "energy_value"
   )
 
 # Create the energy usage plot
-energy_usage_plot <- ggplot(data_long, aes(x = timestamp, y = energy_value, color = energy_type)) +
+energy_usage_plot <- ggplot(data_long, aes(x = timestamp_days, y = energy_value, color = energy_type)) +
   geom_line(size = 1) +
   scale_color_manual(
     values = c(
-      "energy_usage" = "blue",
+      "energy_usage" = "black",
       "energy_usage_battery" = "green",
-      "energy_usage_power_source" = "purple"
+      "energy_usage_adapter" = "blue"
     ),
     labels = c(
-      "Total Energy Usage",
-      "Battery Energy Usage",
-      "Power Source Energy Usage"
+      "Power Source (Energy Usage)",
+      "Battery Energy (Power Adapter)",
+      "Adapter Energy (Power Adapter)"
     )
   ) +
   labs(
-    title = if (use_first_month) "Energy Usages (First Month)" else if (use_first_year) "Energy Usages (First Year)" else "Energy Usages (Entire Duration)",
-    x = "Timestamp",
-    y = "Energy Usage (Units)",
-    color = "Energy Type"
+    title = "Energy Usage for Battery Adapter",
+    x = "Time (in days)",
+    y = "Energy Usage (J)",
+    color = "Energy Source"
   ) +
   theme_minimal() +
   theme(
@@ -66,22 +50,5 @@ energy_usage_plot <- ggplot(data_long, aes(x = timestamp, y = energy_value, colo
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
-# ----- Plot 2: Power Draw Over Time -----
-
-# Create the power draw plot
-power_draw_plot <- ggplot(filtered_data, aes(x = timestamp, y = power_draw)) +
-  geom_line(color = "red", size = 1) +
-  labs(
-    title = if (use_first_month) "Power Draw (First Month)" else if (use_first_year) "Power Draw (First Year)" else "Power Draw (Entire Duration)",
-    x = "Timestamp",
-    y = "Power Draw (Units)"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0.5),
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  )
-
-# Print the plots
+# Print the energy usage plot
 print(energy_usage_plot)
-#print(power_draw_plot)

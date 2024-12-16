@@ -8,6 +8,7 @@ import org.opendc.simulator.engine.FlowEdge;
 import org.opendc.simulator.engine.FlowGraph;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * An Adapter between the Multiplexer, a SimBattery and a SimPowerSource
@@ -112,6 +113,7 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
         this.closeNode();
     }
 
+    long nextUpdate = 0;
     @Override
     public long onUpdate(long now) {
         //Compute if green energy is available
@@ -122,13 +124,19 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
             battery.setCharging();
         }
 
-        //Trigger supply push in powerSource and battery
+        // call this function again depending on the nextUpdate of the battery
         battery.onUpdate(now);
         powerSource.onUpdate(now);
+
         //Update the energy supplied
         updateCounters(now);
 
-        return Long.MAX_VALUE;
+        // Switch to power source if battery is empty and still in use
+        if (battery.isEmpty() && ((MultiSimPowerSource)powerSource).getAdapterPowerDemand() == 0) {
+            pushDemand(powerSourceSupplierEdge, powerDemand);
+        }
+
+        return now + battery.computeNextUpdateDuration(now); // compute next update
     }
 
     @Override

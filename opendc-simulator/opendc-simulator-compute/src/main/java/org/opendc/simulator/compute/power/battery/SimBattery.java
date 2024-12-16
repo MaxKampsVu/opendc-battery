@@ -1,6 +1,5 @@
 package org.opendc.simulator.compute.power.battery;
 
-import org.opendc.simulator.compute.cpu.SimCpu;
 import org.opendc.simulator.engine.FlowConsumer;
 import org.opendc.simulator.engine.FlowEdge;
 import org.opendc.simulator.engine.FlowGraph;
@@ -187,7 +186,22 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
             powerSupplied = 0.0; // make sure the battery does not supply any power
         }
 
-        return Long.MAX_VALUE;
+        return Long.MAX_VALUE; //Compute time to call me again = now + (time to fully deplete/charge me)
+    }
+
+    public long computeNextUpdateDuration(long now) {
+        long duration = 0;
+        if(state == STATE.DEPLETING) { // compute the time at which the battery will be fully depleted
+            duration = (long)((this.chargeLevel) /
+                    (this.powerSupplied * 0.001));
+        } else if (state == STATE.CHARGING) { // compute the time at which the battery will be fully charged
+            duration = (long)((this.capacity - this.chargeLevel) /
+                (this.chargeReceived * 0.001));
+        } else {
+            duration = 1000000000;
+        }
+
+        return duration;
     }
 
     public void updateCounters() {

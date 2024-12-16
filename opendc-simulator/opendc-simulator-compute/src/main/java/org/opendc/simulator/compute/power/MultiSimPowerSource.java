@@ -22,6 +22,10 @@ public class MultiSimPowerSource extends SimPowerSource {
         lastBatteryUpdate = this.clock.millis();
     }
 
+    public double getAdapterPowerDemand() {
+        return super.getPowerDemand();
+    }
+
     /**
      * @return the power demand of the adapter and the battery (in W)
      */
