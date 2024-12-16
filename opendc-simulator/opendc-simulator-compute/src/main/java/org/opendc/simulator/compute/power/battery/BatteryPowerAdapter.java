@@ -136,7 +136,7 @@ public final class BatteryPowerAdapter extends PowerAdapter implements FlowConsu
             pushDemand(powerSourceSupplierEdge, powerDemand);
         }
 
-        return now + battery.computeNextUpdateDuration(now); // compute next update
+        return now + battery.computeNextUpdateDuration(); // compute next update
     }
 
     @Override

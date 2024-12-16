@@ -189,12 +189,12 @@ public class SimBattery extends FlowNode implements FlowSupplier, FlowConsumer {
         return Long.MAX_VALUE; //Compute time to call me again = now + (time to fully deplete/charge me)
     }
 
-    public long computeNextUpdateDuration(long now) {
+    public long computeNextUpdateDuration() {
         long duration = 0;
-        if(state == STATE.DEPLETING) { // compute the time at which the battery will be fully depleted
+        if(state == STATE.DEPLETING) { // compute the duration after which the battery will be fully depleted
             duration = (long)((this.chargeLevel) /
                     (this.powerSupplied * 0.001));
-        } else if (state == STATE.CHARGING) { // compute the time at which the battery will be fully charged
+        } else if (state == STATE.CHARGING) { // compute the duration after which the battery will be fully charged
             duration = (long)((this.capacity - this.chargeLevel) /
                 (this.chargeReceived * 0.001));
         } else {
