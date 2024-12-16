@@ -47,7 +47,7 @@ internal class ExperimentCommand : CliktCommand(name = "experiment") {
      */
     private val scenarioPath by option("--experiment-path", help = "path to experiment file")
         .file(canBeDir = false, canBeFile = true)
-        .defaultLazy { File("resources/optimal_battery_experiment.json") }
+        .defaultLazy { File("resources/batterySize_vs_carbon_experiment.json") }
 
     /**
      * The number of threads to use for parallelism.
