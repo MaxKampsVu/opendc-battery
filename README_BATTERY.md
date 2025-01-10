@@ -19,11 +19,13 @@ The architecture of OpenDC was extended to support batteries as a secondary powe
 
 
 **Old Design:**
+
 ![](readme-battery-pictures/old-situation.drawio.png)
 
 The updated design introduces a Power adapter after the Multiplexer that dynamically switches between the Power suppy and Battery power based on a Carbon policy. The Carbon policy uses the carbon trace to decide if green energy is available. Currently only a simple Carbon Policy exists, which decides if green energy is available based on a simple carbon intensity threshold. 
 
 **New Design:**
+
 ![](readme-battery-pictures/new-situation.drawio.png)
 
 ## Specifying Batteries in JSON Topology Files
