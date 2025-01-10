@@ -73,13 +73,13 @@ The following describes how to conduct a simple experiment using batteries:
  carbon trace that models a simple sinusoidal wave simulating periodic low and high carbon emission phases.
 
 ### Output Files:
-The results of the experiment can be found in the folder `output`. The folder additionally includes the following files specific batteries: 
+The results of the experiment can be found in the folder `output`. The folder additionally includes the following files specific to batteries: 
 - `battery.parquet`: Contains data related to battery performance.
 - `batteryAdapter.parquet`: Contains data related to the powerAdapter managing Battery and Power Source usage.
 
 ### Interpreting the results:
 
-The plot below illustrates the experimental results. The Battery charges during low-carbon periods, causing a spike in power draw, while carbon emissions flatten when the Battery discharges.
+The plot below illustrates the experimental results. The battery charges during low-carbon periods, causing a spike in power draw, while carbon emissions flatten when the battery discharges.
 
 ![](readme-battery-pictures/correctnessStacked.png)
 
